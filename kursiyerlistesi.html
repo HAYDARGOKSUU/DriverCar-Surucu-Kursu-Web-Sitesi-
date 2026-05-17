@@ -1,0 +1,892 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kursiyer Listesi | DRİVERCAR</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #1e3c72;
+            --secondary: #2a5298;
+            --success: #27ae60;
+            --warning: #f39c12;
+            --danger: #e74c3c;
+            --info: #3498db;
+            --bg: #f4f7fe;
+            --white: #ffffff;
+            --text-dark: #2b3674;
+            --text-light: #a3aed1;
+            --shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            --glass: rgba(255, 255, 255, 0.9);
+        }
+
+        [data-theme="dark"] {
+            --bg: #0f172a;
+            --white: #1e293b;
+            --primary: #3b82f6;
+            --text-dark: #f5f6fa;
+            --text-light: #dcdde1;
+            --glass: rgba(30, 41, 59, 0.95);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            display: flex;
+            min-height: 100vh;
+            color: var(--text-dark);
+            transition: all 0.3s ease;
+        }
+
+        [data-theme="dark"] body {
+            background: linear-gradient(135deg, #020617 0%, #1e1b4b 50%, #020617 100%);
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 280px;
+            background: rgba(30, 60, 114, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 30px 20px;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 10px 0 30px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            height: 100vh;
+        }
+
+        .logo-area {
+            color: white;
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .logo-area i {
+            font-size: 3.5rem;
+            margin-bottom: 15px;
+            filter: drop-shadow(0 5px 15px rgba(0,0,0,0.3));
+        }
+
+        .menu-item {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            padding: 16px 20px;
+            margin-bottom: 8px;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-weight: 500;
+            transition: 0.4s;
+        }
+
+        .menu-item:hover,
+        .menu-item.active {
+            background: rgba(255, 255, 255, 0.15);
+            color: white;
+            transform: translateX(8px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            padding: 40px;
+            overflow-y: auto;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(5px);
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .header-title h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .header-title p {
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+
+        /* Filter Section */
+        .filter-section {
+            background: var(--white);
+            padding: 20px;
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+            margin-bottom: 30px;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            align-items: end;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--text-dark);
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #f0f2f5;
+            border-radius: 12px;
+            outline: none;
+            background: #f8fafc;
+            font-size: 0.9rem;
+            transition: 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            border-color: var(--primary);
+            background: var(--white);
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: var(--white);
+            padding: 20px;
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .stat-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 15px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.2rem;
+        }
+
+        .stat-info h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .stat-info p {
+            font-size: 0.8rem;
+            color: var(--text-light);
+        }
+
+        /* Table Section */
+        .list-card {
+            background: var(--white);
+            border-radius: 25px;
+            padding: 30px;
+            box-shadow: var(--shadow);
+        }
+
+        .table-container {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            text-align: left;
+            padding: 15px;
+            color: var(--text-light);
+            font-weight: 600;
+            font-size: 0.85rem;
+            border-bottom: 1px solid #f0f2f5;
+        }
+
+        td {
+            padding: 15px;
+            vertical-align: middle;
+            border-bottom: 1px solid #f0f2f5;
+        }
+
+        .student-cell {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .student-img {
+            width: 45px;
+            height: 45px;
+            border-radius: 12px;
+            object-fit: cover;
+        }
+
+        .student-info h4 {
+            font-size: 0.95rem;
+            font-weight: 600;
+        }
+
+        .student-info p {
+            font-size: 0.75rem;
+            color: var(--text-light);
+        }
+
+        .badge {
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .badge-success { background: rgba(39, 174, 96, 0.1); color: var(--success); }
+        .badge-warning { background: rgba(243, 156, 18, 0.1); color: var(--warning); }
+        .badge-danger { background: rgba(231, 76, 60, 0.1); color: var(--danger); }
+        .badge-info { background: rgba(52, 152, 219, 0.1); color: var(--info); }
+
+        .action-btns {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-icon {
+            width: 35px;
+            height: 35px;
+            border-radius: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: none;
+            cursor: pointer;
+            transition: 0.3s;
+            font-size: 0.9rem;
+        }
+
+        .btn-edit { background: rgba(52, 152, 219, 0.1); color: var(--info); }
+        .btn-view { background: rgba(30, 60, 114, 0.1); color: var(--primary); }
+        .btn-docs { background: rgba(39, 174, 96, 0.1); color: var(--success); }
+        .btn-delete { background: rgba(231, 76, 60, 0.1); color: var(--danger); }
+
+        .btn-edit:hover { background: var(--info); color: white; }
+        .btn-view:hover { background: var(--primary); color: white; }
+        .btn-docs:hover { background: var(--success); color: white; }
+        .btn-delete:hover { background: var(--danger); color: white; }
+
+        .whatsapp-float {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            background-color: #25d366;
+            color: #fff;
+            border-radius: 50%;
+            text-align: center;
+            font-size: 30px;
+            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-decoration: none;
+            transition: 0.3s;
+        }
+
+        .whatsapp-float:hover { transform: scale(1.1); }
+
+        /* Renkli ve Modern Hata/Uyarı Popup */
+        .toast-container {
+            position: fixed;
+            top: 25px;
+            right: -400px;
+            width: 350px;
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            color: white;
+            border-radius: 20px;
+            padding: 18px 25px;
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            box-shadow: 0 15px 35px rgba(30, 60, 114, 0.4);
+            z-index: 9999;
+            transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+        }
+
+        .toast-container.warning {
+            background: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
+            box-shadow: 0 15px 35px rgba(253, 160, 133, 0.4);
+            color: #7f3f00;
+        }
+
+        .toast-container.success {
+            background: linear-gradient(135deg, #11998e, #38ef7d);
+            box-shadow: 0 15px 35px rgba(56, 239, 125, 0.4);
+            color: white;
+        }
+
+        .toast-container.error {
+            background: linear-gradient(135deg, #ff416c, #ff4b2b);
+            box-shadow: 0 15px 35px rgba(255, 65, 108, 0.4);
+            color: white;
+        }
+
+        .toast-container.show {
+            right: 25px;
+            animation: shake 0.5s ease-in-out;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        .toast-container i {
+            font-size: 2.2rem;
+            background: rgba(255, 255, 255, 0.25);
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 15px;
+            flex-shrink: 0;
+        }
+
+        .toast-container.warning i {
+            background: rgba(127, 63, 0, 0.1);
+            color: #7f3f00;
+        }
+
+        .toast-content h4 {
+            margin: 0 0 4px 0;
+            font-size: 1.2rem;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+        }
+
+        .toast-content p {
+            margin: 0;
+            font-size: 0.95rem;
+            font-weight: 500;
+            opacity: 0.9;
+            line-height: 1.4;
+        }
+
+        .toast-close {
+            margin-left: auto;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .toast-container.warning .toast-close {
+            background: rgba(127, 63, 0, 0.1);
+            color: #7f3f00;
+        }
+
+        .toast-close:hover {
+            background: rgba(255, 255, 255, 0.4);
+            transform: rotate(90deg);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="toast-container" id="toast">
+        <i class="fas fa-info-circle"></i>
+        <div class="toast-content">
+            <h4 id="toastTitle">Bildirim</h4>
+            <p id="toastMessage">İşlem başarıyla tamamlandı.</p>
+        </div>
+        <button class="toast-close" onclick="closeToast()"><i class="fas fa-times"></i></button>
+    </div>
+
+    <div class="sidebar">
+        <div class="logo-area" style="flex-direction: column; justify-content: center; padding-left: 0; gap: 10px; text-align: center;">
+            <img src="resim1.png" alt="Logo" style="width: 100px; height: auto; background: rgba(255, 255, 255, 0.95); padding: 8px 12px; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.2);">
+            <h2>DRİVERCAR</h2>
+        </div>
+        <div id="sidebar-links"></div>
+    </div>
+
+    <div class="main-content">
+        <div class="page-header">
+            <div class="header-title">
+                <h1>Kursiyer Listesi</h1>
+                <p>Toplam kayıtlı kursiyerlerin detaylı yönetimi</p>
+            </div>
+            <button class="btn-icon btn-view" style="width: auto; padding: 0 20px;" onclick="window.location.href='kursiyerkayit.html'">
+                <i class="fas fa-plus"></i> &nbsp; Yeni Kursiyer Ekle
+            </button>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon" style="background: rgba(30, 60, 114, 0.1); color: var(--primary);">
+                    <i class="fas fa-users"></i>
+                </div>
+                <div class="stat-info">
+                    <h3>156</h3>
+                    <p>Toplam Kayıt</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon" style="background: rgba(39, 174, 96, 0.1); color: var(--success);">
+                    <i class="fas fa-user-check"></i>
+                </div>
+                <div class="stat-info">
+                    <h3>92</h3>
+                    <p>Aktif Eğitimde</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon" style="background: rgba(243, 156, 18, 0.1); color: var(--warning);">
+                    <i class="fas fa-file-invoice-dollar"></i>
+                </div>
+                <div class="stat-info">
+                    <h3>12</h3>
+                    <p>Ödemesi Geciken</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon" style="background: rgba(52, 152, 219, 0.1); color: var(--info);">
+                    <i class="fas fa-graduation-cap"></i>
+                </div>
+                <div class="stat-info">
+                    <h3>45</h3>
+                    <p>Mezun</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="filter-section">
+            <div class="form-group">
+                <label>Kursiyer Ara</label>
+                <input type="text" id="searchInput" placeholder="İsim veya T.C. no..." oninput="filterList()">
+            </div>
+            <div class="form-group">
+                <label>Ehliyet Sınıfı</label>
+                <select id="classFilter" onchange="filterList()">
+                    <option value="">Tümü</option>
+                    <option value="B">B Sınıfı</option>
+                    <option value="A">A Sınıfı</option>
+                    <option value="C">C Sınıfı</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Durum</label>
+                <select id="statusFilter" onchange="filterList()">
+                    <option value="">Tümü</option>
+                    <option value="Aktif">Aktif</option>
+                    <option value="Beklemede">Beklemede</option>
+                    <option value="Mezun">Mezun</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <button class="btn-icon btn-view" style="width: 100%;" onclick="exportData()">
+                    <i class="fas fa-file-excel"></i> &nbsp; Excel'e Aktar
+                </button>
+            </div>
+        </div>
+
+        <div class="list-card">
+            <div class="table-container">
+                <table id="studentTable">
+                    <thead>
+                        <tr>
+                            <th>Kursiyer</th>
+                            <th>T.C. Kimlik</th>
+                            <th>Sınıf</th>
+                            <th>Kayıt Tarihi</th>
+                            <th>Borç Durumu</th>
+                            <th>Eğitim Durumu</th>
+                            <th>İşlemler</th>
+                        </tr>
+                    </thead>
+                    <tbody id="studentList">
+                        <!-- Genişletilmiş Örnek Veri -->
+                        <tr>
+                            <td><div class="student-cell"><img src="https://i.pravatar.cc/150?u=1" class="student-img"><div class="student-info"><h4>Caner Aksoy</h4><p>caner@email.com</p></div></div></td>
+                            <td>11223344556</td><td>B (Manuel)</td><td>10.04.2024</td><td><span class="badge badge-success">Ödendi</span></td><td><span class="badge badge-info">Direksiyon</span></td>
+                            <td><div class="action-btns"><button class="btn-icon btn-view"><i class="fas fa-eye"></i></button><button class="btn-icon btn-edit" onclick="openEditModal('Caner Aksoy', '11223344556', 'B (Manuel)')"><i class="fas fa-pen"></i></button><button class="btn-icon btn-delete" onclick="deleteStudent(this, '11223344556')"><i class="fas fa-trash"></i></button></div></td>
+                        </tr>
+                        <tr>
+                            <td><div class="student-cell"><img src="https://i.pravatar.cc/150?u=2" class="student-img"><div class="student-info"><h4>Merve Çetin</h4><p>merve@email.com</p></div></div></td>
+                            <td>22334455667</td><td>B (Otomatik)</td><td>12.04.2024</td><td><span class="badge badge-warning">1.200₺ Borç</span></td><td><span class="badge badge-warning">Teorik</span></td>
+                            <td><div class="action-btns"><button class="btn-icon btn-view"><i class="fas fa-eye"></i></button><button class="btn-icon btn-edit" onclick="openEditModal('Merve Çetin', '22334455667', 'B (Otomatik)')"><i class="fas fa-pen"></i></button><button class="btn-icon btn-delete" onclick="deleteStudent(this, '22334455667')"><i class="fas fa-trash"></i></button></div></td>
+                        </tr>
+                        <tr>
+                            <td><div class="student-cell"><img src="https://i.pravatar.cc/150?u=3" class="student-img"><div class="student-info"><h4>Selim Güneş</h4><p>selim@email.com</p></div></div></td>
+                            <td>33445566778</td><td>A2 (Motor)</td><td>15.04.2024</td><td><span class="badge badge-success">Ödendi</span></td><td><span class="badge badge-info">Evrak Bekliyor</span></td>
+                            <td><div class="action-btns"><button class="btn-icon btn-view"><i class="fas fa-eye"></i></button><button class="btn-icon btn-edit" onclick="openEditModal('Selim Güneş', '33445566778', 'A2 (Motor)')"><i class="fas fa-pen"></i></button><button class="btn-icon btn-delete" onclick="deleteStudent(this, '33445566778')"><i class="fas fa-trash"></i></button></div></td>
+                        </tr>
+                        <tr>
+                            <td><div class="student-cell"><img src="https://i.pravatar.cc/150?u=4" class="student-img"><div class="student-info"><h4>Zeynep Kaya</h4><p>zeynep@email.com</p></div></div></td>
+                            <td>44556677889</td><td>B (Manuel)</td><td>18.04.2024</td><td><span class="badge badge-danger">3.500₺ Borç</span></td><td><span class="badge badge-danger">Kayıt Silindi</span></td>
+                            <td><div class="action-btns"><button class="btn-icon btn-view"><i class="fas fa-eye"></i></button><button class="btn-icon btn-edit" onclick="openEditModal('Zeynep Kaya', '44556677889', 'B (Manuel)')"><i class="fas fa-pen"></i></button><button class="btn-icon btn-delete" onclick="deleteStudent(this, '44556677889')"><i class="fas fa-trash"></i></button></div></td>
+                        </tr>
+                        <tr>
+                            <td><div class="student-cell"><img src="https://i.pravatar.cc/150?u=5" class="student-img"><div class="student-info"><h4>Burak Yılmaz</h4><p>burak@email.com</p></div></div></td>
+                            <td>55667788990</td><td>C (Kamyon)</td><td>20.04.2024</td><td><span class="badge badge-success">Ödendi</span></td><td><span class="badge badge-success">Mezun</span></td>
+                            <td><div class="action-btns"><button class="btn-icon btn-view"><i class="fas fa-eye"></i></button><button class="btn-icon btn-edit" onclick="openEditModal('Burak Yılmaz', '55667788990', 'C (Kamyon)')"><i class="fas fa-pen"></i></button><button class="btn-icon btn-delete" onclick="deleteStudent(this, '55667788990')"><i class="fas fa-trash"></i></button></div></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <a href="https://wa.me/905000000000" class="whatsapp-float" target="_blank">
+        <i class="fab fa-whatsapp"></i>
+    </a>
+
+    <!-- Edit Modal -->
+    <div id="editModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:2000; justify-content:center; align-items:center;">
+        <div style="background:var(--white); padding:30px; border-radius:25px; width:450px; box-shadow:var(--shadow);">
+            <h2 style="margin-bottom:20px; color:var(--primary);">Kursiyer Düzenle</h2>
+            <div class="form-group">
+                <label>Ad Soyad</label>
+                <input type="text" id="editName">
+            </div>
+            <div class="form-group">
+                <label>T.C. Kimlik</label>
+                <input type="text" id="editTC" disabled>
+            </div>
+            <div class="form-group">
+                <label>Ehliyet Sınıfı</label>
+                <select id="editClass">
+                    <option>B (Manuel)</option>
+                    <option>B (Otomatik)</option>
+                    <option>A2 (Motor)</option>
+                    <option>C (Kamyon)</option>
+                </select>
+            </div>
+            <div style="display:flex; gap:10px; margin-top:20px;">
+                <button class="btn-icon btn-view" style="width:100%;" onclick="saveEdit()">Kaydet</button>
+                <button class="btn-icon btn-delete" style="width:100%;" onclick="document.getElementById('editModal').style.display='none'">İptal</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Documents Modal -->
+    <div id="docsModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:2000; justify-content:center; align-items:center; backdrop-filter: blur(5px);">
+        <div style="background:var(--white); padding:30px; border-radius:25px; width:80%; max-width:900px; max-height: 90vh; overflow-y: auto; box-shadow:var(--shadow);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h2 style="color:var(--primary);"><i class="fas fa-file-medical"></i> Kursiyer Evrakları</h2>
+                <button onclick="document.getElementById('docsModal').style.display='none'" style="background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--danger);"><i class="fas fa-times"></i></button>
+            </div>
+            <div id="docsContainer" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;">
+                <!-- Documents will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Renkli Bildirim Sistemi
+        function showToast(title, message, type = 'success') {
+            const toast = document.getElementById('toast');
+            if (!toast) return;
+            const icon = toast.querySelector('i');
+            
+            toast.classList.remove('success', 'warning', 'error');
+            toast.classList.add(type);
+            
+            if (type === 'success') icon.className = 'fas fa-check-circle';
+            else if (type === 'warning') icon.className = 'fas fa-exclamation-triangle';
+            else if (type === 'error') icon.className = 'fas fa-exclamation-circle';
+
+            document.getElementById('toastTitle').innerText = title;
+            document.getElementById('toastMessage').innerText = message;
+            
+            toast.classList.add('show');
+            if (window.toastTimer) clearTimeout(window.toastTimer);
+            window.toastTimer = setTimeout(closeToast, 5000);
+        }
+
+        function closeToast() {
+            const toast = document.getElementById('toast');
+            if (toast) toast.classList.remove('show');
+        }
+
+        function checkAccess() {
+            const role = localStorage.getItem('userRole') || 'staff';
+            const theme = localStorage.getItem('theme') || 'light';
+            if (theme === 'dark') document.body.setAttribute('data-theme', 'dark');
+
+            const sidebar = document.getElementById('sidebar-links');
+            let links = '';
+            
+            if (role === 'student') {
+                window.location.href = "profil.html";
+            } else if (role === 'instructor') {
+                links = `
+                    <a href="egitmen.html" class="menu-item"><i class="fas fa-chalkboard-teacher"></i> Eğitmen Paneli</a>
+                    <a href="kursiyerlistesi.html" class="menu-item active"><i class="fas fa-list-ul"></i> Öğrencilerim</a>
+                    <a href="profil.html" class="menu-item"><i class="fas fa-user-circle"></i> Profilim</a>
+                    <a href="giris.html" class="menu-item" onclick="localStorage.clear()"><i class="fas fa-sign-out-alt"></i> Çıkış Yap</a>
+                `;
+            } else {
+                links = `
+                    <a href="kursiyerkayit.html" class="menu-item"><i class="fas fa-user-plus"></i> Kursiyer Kayıt</a>
+                    <a href="kursiyerlistesi.html" class="menu-item active"><i class="fas fa-list-ul"></i> Kursiyer Listesi</a>
+                    <a href="suruspratikleri.html" class="menu-item"><i class="fas fa-steering-wheel"></i> Sürüş Pratikleri</a>
+                    <a href="araclar.html" class="menu-item"><i class="fas fa-car"></i> Araç Filosu</a>
+                    <a href="egitmen.html" class="menu-item"><i class="fas fa-chalkboard-teacher"></i> Eğitmen Yönetimi</a>
+                    <a href="muhasebe.html" class="menu-item"><i class="fas fa-credit-card"></i> Muhasebe</a>
+                    <a href="istatistikler.html" class="menu-item"><i class="fas fa-chart-line"></i> İstatistikler</a>
+                    <a href="sistemayarlari.html" class="menu-item"><i class="fas fa-cog"></i> Sistem Ayarları</a>
+                    <a href="giris.html" class="menu-item" onclick="localStorage.clear()"><i class="fas fa-sign-out-alt"></i> Çıkış Yap</a>
+                `;
+            }
+            sidebar.innerHTML = links;
+            loadStudents();
+        }
+
+        function loadStudents() {
+            fetch('http://localhost:5000/api/students')
+            .then(response => response.json())
+            .then(data => {
+                const tbody = document.getElementById('studentList');
+                tbody.innerHTML = ''; // Temizle
+
+                data.forEach(k => {
+                    const tr = document.createElement('tr');
+                    const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
+                    const yetkiler = currentUser.yetkiler || {};
+                    const canDelete = yetkiler.can_delete !== false;
+
+                    tr.innerHTML = `
+                        <td>
+                            <div class="student-cell">
+                                <img src="${k.fotograf_url || 'https://i.pravatar.cc/150?u=' + k.ad}" class="student-img">
+                                <div class="student-info">
+                                    <h4>${k.ad} ${k.soyad}</h4>
+                                    <p>${k.eposta}</p>
+                                </div>
+                            </div>
+                        </td>
+                        <td>${k.tc_no}</td>
+                        <td>${k.ehliyet_sinifi}</td>
+                        <td>${new Date(k.kayit_tarihi).toLocaleDateString('tr-TR')}</td>
+                        <td><span class="badge badge-success">Ödendi</span></td>
+                        <td><span class="badge badge-info">${k.durum || 'Aktif'}</span></td>
+                        <td>
+                            <div class="action-btns">
+                                <button class="btn-icon btn-view" title="Profil" onclick="window.location.href='profil.html?tc=${k.tc_no}'"><i class="fas fa-eye"></i></button>
+                                <button class="btn-icon btn-docs" title="Evraklar" onclick="viewDocs('${k.tc_no}')"><i class="fas fa-file-medical"></i></button>
+                                <button class="btn-icon btn-edit" title="Düzenle" onclick="openEditModal('${k.ad} ${k.soyad}', '${k.tc_no}', '${k.ehliyet_sinifi}')"><i class="fas fa-pen"></i></button>
+                                ${canDelete ? `<button class="btn-icon btn-delete" title="Sil" onclick="deleteStudent(this, '${k.tc_no}')"><i class="fas fa-trash"></i></button>` : ''}
+                            </div>
+                        </td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+                
+                // İstatistikleri güncelle
+                document.querySelector('.stat-card:nth-child(1) h3').innerText = 156 + data.length;
+                document.querySelector('.stat-card:nth-child(2) h3').innerText = 92 + data.length;
+            })
+            .catch(err => console.error('Öğrenci listesi yüklenemedi:', err));
+        }
+
+        function updateStats() {
+            const kayitlar = JSON.parse(localStorage.getItem('kursiyerler')) || [];
+            document.querySelector('.stat-card:nth-child(1) h3').innerText = 156 + kayitlar.length;
+            document.querySelector('.stat-card:nth-child(2) h3').innerText = 92 + kayitlar.filter(k => k.status === 'Eğitimde').length;
+        }
+
+        async function deleteStudent(btn, tc) {
+            console.log("Silme işlemi başlatıldı. TC:", tc);
+            if(confirm('Bu kursiyeri silmek istediğinize emin misiniz?')) {
+                try {
+                    const response = await fetch(`http://localhost:5000/api/students/${tc}`, { method: 'DELETE' });
+                    const result = await response.json();
+                    
+                    if (response.ok && result.success) {
+                        btn.closest('tr').remove();
+                        if (typeof showToast === 'function') {
+                            showToast('Başarılı', 'Kursiyer başarıyla silindi.', 'success');
+                        } else {
+                            alert("Kursiyer silindi.");
+                        }
+                    } else {
+                        throw new Error(result.error || 'Silme işlemi başarısız');
+                    }
+                } catch (err) {
+                    console.error("Silme Hatası:", err);
+                    if (typeof showToast === 'function') {
+                        showToast('Hata', 'Kursiyer silinirken bir sorun oluştu: ' + err.message, 'error');
+                    } else {
+                        alert("Hata: " + err.message);
+                    }
+                }
+            }
+        }
+
+        function filterList() {
+            const search = document.getElementById('searchInput').value.toLowerCase();
+            const classVal = document.getElementById('classFilter').value;
+            const status = document.getElementById('statusFilter').value;
+            const rows = document.querySelectorAll('#studentList tr');
+
+            rows.forEach(row => {
+                const name = row.querySelector('h4').innerText.toLowerCase();
+                const tc = row.querySelectorAll('td')[1].innerText;
+                const sClass = row.querySelectorAll('td')[2].innerText;
+                const badges = row.querySelectorAll('.badge');
+                const sStatus = Array.from(badges).map(b => b.innerText).join(' ');
+
+                const matchSearch = name.includes(search) || tc.includes(search);
+                const matchClass = classVal === "" || sClass.includes(classVal);
+                const matchStatus = status === "" || sStatus.includes(status);
+
+                row.style.display = (matchSearch && matchClass && matchStatus) ? '' : 'none';
+            });
+        }
+
+        function exportData() {
+            const rows = document.querySelectorAll('#studentTable tr');
+            let csv = "Ad Soyad,TC,Sinif,Tarih,Borc,Durum\n";
+            
+            rows.forEach((row, idx) => {
+                if (idx === 0) return; // Header
+                if (row.style.display === 'none') return;
+
+                const cells = row.querySelectorAll('td');
+                const name = cells[0].querySelector('h4').innerText;
+                const tc = cells[1].innerText;
+                const sClass = cells[2].innerText;
+                const date = cells[3].innerText;
+                const borc = cells[4].innerText;
+                const status = cells[5].innerText;
+
+                csv += `${name},${tc},${sClass},${date},${borc},${status}\n`;
+            });
+
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement("a");
+            const url = URL.createObjectURL(blob);
+            link.setAttribute("href", url);
+            link.setAttribute("download", "kursiyer_listesi.csv");
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        function openEditModal(name, tc, sClass) {
+            document.getElementById('editName').value = name;
+            document.getElementById('editTC').value = tc;
+            document.getElementById('editClass').value = sClass;
+            document.getElementById('editModal').style.display = 'flex';
+        }
+
+        function saveEdit() {
+            const name = document.getElementById('editName').value;
+            const tc = document.getElementById('editTC').value;
+            const sClass = document.getElementById('editClass').value;
+            
+            // LocalStorage güncelleme (Eğer kayıt varsa)
+            let kayitlar = JSON.parse(localStorage.getItem('kursiyerler')) || [];
+            const index = kayitlar.findIndex(k => k.tc === tc);
+            if (index !== -1) {
+                kayitlar[index].ad = name.split(' ')[0];
+                kayitlar[index].soyad = name.split(' ')[1] || '';
+                localStorage.setItem('kursiyerler', JSON.stringify(kayitlar));
+            }
+
+            alert("Kayıt başarıyla güncellendi!");
+            location.reload();
+        }
+
+        async function viewDocs(tc) {
+            try {
+                const response = await fetch(`http://localhost:5000/api/students/${tc}`);
+                const student = await response.json();
+                
+                const container = document.getElementById('docsContainer');
+                container.innerHTML = '';
+                
+                const docs = [
+                    { label: 'Adli Sicil Kaydı', url: student.url_adli_sicil, icon: 'fa-gavel' },
+                    { label: 'Sağlık Raporu', url: student.url_saglik_raporu, icon: 'fa-heartbeat' },
+                    { label: 'Diploma / Mezuniyet', url: student.url_diploma, icon: 'fa-graduation-cap' },
+                    { label: 'Kimlik Fotokopisi', url: student.url_kimlik, icon: 'fa-id-card' }
+                ];
+                
+                docs.forEach(doc => {
+                    const card = document.createElement('div');
+                    card.style.cssText = "background: #f8fafc; padding: 20px; border-radius: 15px; border: 1px solid #e2e8f0; display: flex; flex-direction: column; align-items: center; gap: 15px;";
+                    
+                    if (doc.url) {
+                        let previewHtml = '';
+                        if (doc.url.match(/\.(jpg|jpeg|png|gif)$/i)) {
+                            previewHtml = `<img src="${doc.url}" style="width: 100%; height: 200px; object-fit: contain; border-radius: 10px;">`;
+                        } else {
+                            previewHtml = `<div style="width: 100%; height: 200px; background: #e2e8f0; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 3rem; color: var(--primary);"><i class="fas fa-file-pdf"></i></div>`;
+                        }
+                        
+                        card.innerHTML = `
+                            <i class="fas ${doc.icon}" style="font-size: 1.5rem; color: var(--primary);"></i>
+                            <h4 style="font-size: 0.9rem;">${doc.label}</h4>
+                            ${previewHtml}
+                            <a href="${doc.url}" target="_blank" style="background: var(--primary); color: white; padding: 10px 20px; border-radius: 8px; text-decoration: none; font-size: 0.85rem; font-weight: 500; width: 100%; text-align: center;">Görüntüle / İndir</a>
+                        `;
+                    } else {
+                        card.innerHTML = `
+                            <i class="fas ${doc.icon}" style="font-size: 1.5rem; color: var(--danger); opacity: 0.5;"></i>
+                            <h4 style="font-size: 0.9rem; color: var(--text-light);">${doc.label}</h4>
+                            <div style="width: 100%; height: 200px; background: #f1f5f9; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1rem; color: var(--text-light); font-style: italic;">Evrak Yüklenmemiş</div>
+                        `;
+                    }
+                    container.appendChild(card);
+                });
+                
+                document.getElementById('docsModal').style.display = 'flex';
+            } catch (error) {
+                console.error('Evrak yükleme hatası:', error);
+                alert('Evraklar yüklenirken bir hata oluştu.');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', checkAccess);
+    </script>
+</body>
+
+</html>

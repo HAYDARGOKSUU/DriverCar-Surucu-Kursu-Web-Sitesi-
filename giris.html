@@ -1,0 +1,1518 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sürücü Kursu Otomasyonu | Giriş</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --primary: #1e3c72;
+            --secondary: #2a5298;
+            --success: #27ae60;
+            --danger: #e74c3c;
+            --text-dark: #2d3436;
+            --text-light: #636e72;
+            --bg-color: #f0f2f5;
+            --card-bg: #ffffff;
+            --input-bg: #f8fafc;
+            --input-border: #e2e8f0;
+        }
+
+        [data-theme="dark"] {
+            --primary: #4e82e8;
+            --secondary: #5c93fa;
+            --success: #2ecc71;
+            --danger: #ff6b6b;
+            --text-dark: #f5f6fa;
+            --text-light: #dcdde1;
+            --bg-color: #121212;
+            --card-bg: #1e1e1e;
+            --input-bg: #2c2c2c;
+            --input-border: #3d3d3d;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, var(--bg-color) 0%, rgba(30, 60, 114, 0.1) 100%);
+            overflow: hidden;
+            transition: background 0.3s, opacity 0.5s ease-out;
+        }
+
+        body.fade-out {
+            opacity: 0;
+            transform: scale(0.98);
+        }
+
+        .theme-toggle {
+            position: absolute;
+            top: 25px;
+            right: 25px;
+            background: var(--card-bg);
+            border: none;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            font-size: 1.2rem;
+            color: var(--text-dark);
+            z-index: 10;
+            transition: all 0.3s;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.1) rotate(15deg);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Ana Konteyner */
+        .login-wrapper {
+            display: flex;
+            width: 100%;
+            max-width: 1050px;
+            min-height: 650px;
+            background: var(--card-bg);
+            border-radius: 20px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+            animation: scaleUp 0.6s ease-out;
+            transition: background 0.3s;
+        }
+
+        @keyframes scaleUp {
+            from {
+                opacity: 0;
+                transform: scale(0.95) translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        /* Sol Taraf */
+        .login-left {
+            flex: 1.2;
+            background: linear-gradient(135deg, rgba(30, 60, 114, 0.85), rgba(42, 82, 152, 0.85)), url('https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?q=80&w=1000&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 50px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+            animation: bgPan 25s infinite alternate linear;
+        }
+
+        @keyframes bgPan {
+            0% {
+                background-position: left center;
+                background-size: 100%;
+            }
+
+            100% {
+                background-position: right center;
+                background-size: 110%;
+            }
+        }
+
+        .login-left::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at top right, rgba(255, 255, 255, 0.1), transparent);
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 30px;
+            z-index: 1;
+        }
+
+        .logo-area i {
+            font-size: 3.5rem;
+            color: #fff;
+            animation: floatLogo 3s ease-in-out infinite;
+        }
+
+        @keyframes floatLogo {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        .logo-area h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            margin-bottom: -5px;
+        }
+
+        .logo-area span {
+            font-size: 0.85rem;
+            letter-spacing: 3px;
+            opacity: 0.8;
+            font-weight: 500;
+        }
+
+        .login-left h2 {
+            font-size: 2.5rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            line-height: 1.2;
+            z-index: 1;
+        }
+
+        .login-left p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            line-height: 1.6;
+            z-index: 1;
+        }
+
+        /* Sağ Taraf */
+        .login-right {
+            flex: 1;
+            padding: 50px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            transition: background 0.3s;
+        }
+
+        .login-right h3 {
+            color: var(--text-dark);
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .login-right p.subtitle {
+            color: var(--text-light);
+            font-size: 0.95rem;
+            margin-bottom: 35px;
+        }
+
+        .input-group {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 0.85rem;
+            color: var(--text-dark);
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .hint-text {
+            display: block;
+            font-size: 0.75rem;
+            color: var(--text-light);
+            margin-top: 5px;
+            margin-left: 5px;
+        }
+
+        .input-with-icon {
+            position: relative;
+        }
+
+        .input-with-icon i.icon-left {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #94a3b8;
+            font-size: 1.1rem;
+            transition: 0.3s;
+        }
+
+        .input-with-icon input {
+            width: 100%;
+            padding: 14px 45px 14px 45px;
+            border: 2px solid var(--input-border);
+            border-radius: 12px;
+            outline: none;
+            transition: all 0.3s;
+            font-size: 0.95rem;
+            background: var(--input-bg);
+            color: var(--text-dark);
+        }
+
+        .input-with-icon input:focus {
+            border-color: var(--primary);
+            background: var(--card-bg);
+            box-shadow: 0 0 0 4px rgba(30, 60, 114, 0.1);
+        }
+
+        .input-with-icon input:focus+i.icon-left {
+            color: var(--primary);
+        }
+
+        /* Validation Glow and Icons */
+        .input-with-icon input.valid {
+            border-color: var(--success);
+            box-shadow: 0 0 0 4px rgba(39, 174, 96, 0.1);
+        }
+
+        .input-with-icon input.invalid {
+            border-color: var(--danger);
+            box-shadow: 0 0 0 4px rgba(231, 76, 60, 0.1);
+        }
+
+        .validation-icon {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.1rem;
+            transition: 0.3s;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        input.valid~.fa-check {
+            opacity: 1;
+            color: var(--success);
+        }
+
+        input.invalid~.fa-times {
+            opacity: 1;
+            color: var(--danger);
+        }
+
+        /* Password Toggle */
+        .toggle-password {
+            position: absolute;
+            right: 40px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #94a3b8;
+            transition: 0.3s;
+            z-index: 2;
+        }
+
+        .toggle-password:hover {
+            color: var(--primary);
+        }
+
+        .remember-me {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 25px;
+            font-size: 0.9rem;
+            color: var(--text-dark);
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .remember-me input {
+            accent-color: var(--primary);
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 10px 20px rgba(30, 60, 114, 0.2);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 25px rgba(30, 60, 114, 0.3);
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            text-align: center;
+            margin: 20px 0 15px 0;
+            color: var(--text-light);
+            font-size: 0.85rem;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            border-bottom: 1px solid var(--input-border);
+        }
+
+        .divider span {
+            padding: 0 15px;
+            font-weight: 500;
+        }
+
+        /* Social Login */
+        .social-login {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .social-btn {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid var(--input-border);
+            background: var(--input-bg);
+            color: var(--text-dark);
+            border-radius: 12px;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+            transition: all 0.3s;
+            font-size: 0.95rem;
+        }
+
+        .social-btn:hover {
+            background: var(--card-bg);
+            border-color: var(--primary);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .signup-btn {
+            width: 100%;
+            padding: 14px;
+            background: transparent;
+            color: var(--primary);
+            border: 2px dashed var(--input-border);
+            border-radius: 12px;
+            font-size: 1.05rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .signup-btn:hover {
+            background: var(--input-bg);
+            border-color: var(--primary);
+            border-style: solid;
+        }
+
+        .login-footer {
+            margin-top: 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid var(--input-border);
+            padding-top: 20px;
+        }
+
+        .login-footer button {
+            background: none;
+            border: none;
+            color: var(--text-light);
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .login-footer button:hover {
+            color: var(--primary);
+        }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .modal-box {
+            background: var(--card-bg);
+            padding: 40px;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 450px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+            transform: translateY(-20px) scale(0.95);
+            transition: all 0.3s ease;
+            position: relative;
+            color: var(--text-dark);
+        }
+
+        .modal-overlay.active .modal-box {
+            transform: translateY(0) scale(1);
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--text-light);
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .modal-close:hover {
+            color: var(--danger);
+        }
+
+        .modal-box h3 {
+            color: var(--primary);
+            margin-bottom: 10px;
+            font-size: 1.5rem;
+        }
+
+        .modal-box p {
+            color: var(--text-light);
+            font-size: 0.9rem;
+            margin-bottom: 25px;
+        }
+
+        .action-btn {
+            width: 100%;
+            padding: 12px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: 0.3s;
+        }
+
+        .action-btn:hover {
+            background: var(--secondary);
+        }
+
+        .otp-inputs {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+
+        .otp-inputs input {
+            width: 45px;
+            height: 50px;
+            text-align: center;
+            font-size: 1.5rem;
+            border: 2px solid var(--input-border);
+            border-radius: 10px;
+            outline: none;
+            background: var(--input-bg);
+            color: var(--text-dark);
+        }
+
+        .otp-inputs input:focus {
+            border-color: var(--primary);
+            background: var(--card-bg);
+        }
+
+        .modal-step {
+            display: none;
+        }
+
+        .modal-step.active {
+            display: block;
+            animation: fadeInStep 0.4s;
+        }
+
+        @keyframes fadeInStep {
+            from {
+                opacity: 0;
+                transform: translateX(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .support-card {
+            background: var(--input-bg);
+            border: 1px solid var(--input-border);
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            text-align: left;
+        }
+
+        .support-card i {
+            font-size: 1.5rem;
+            color: var(--primary);
+        }
+
+        .support-card div h4 {
+            font-size: 1rem;
+            color: var(--text-dark);
+        }
+
+        .support-card div p {
+            margin: 0;
+            font-size: 0.85rem;
+            color: var(--text-light);
+        }
+
+        /* Role Selector Styles */
+        .role-selector {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            background: var(--input-bg);
+            padding: 5px;
+            border-radius: 15px;
+            border: 1px solid var(--input-border);
+        }
+
+        .role-btn {
+            flex: 1;
+            padding: 12px 5px;
+            border: none;
+            background: transparent;
+            color: var(--text-light);
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            border-radius: 12px;
+            transition: all 0.3s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .role-btn i {
+            font-size: 1.2rem;
+        }
+
+        .role-btn.active {
+            background: var(--card-bg);
+            color: var(--primary);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .role-btn.active i {
+            color: var(--primary);
+        }
+
+        .role-indicator {
+            padding: 10px 15px;
+            border-radius: 10px;
+            background: rgba(30, 60, 114, 0.05);
+            margin-bottom: 25px;
+            border-left: 4px solid var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .role-indicator i {
+            font-size: 1.5rem;
+            color: var(--primary);
+        }
+
+        .role-indicator div h4 {
+            font-size: 0.95rem;
+            color: var(--text-dark);
+        }
+
+        .role-indicator div p {
+            font-size: 0.8rem;
+            color: var(--text-light);
+            margin: 0;
+        }
+
+        .whatsapp-float {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            background-color: #25d366;
+            color: #fff;
+            border-radius: 50%;
+            text-align: center;
+            font-size: 30px;
+            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+        .whatsapp-float:hover {
+            transform: scale(1.1);
+            background-color: #128c7e;
+            box-shadow: 2px 2px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Loading Overlay */
+        .loader-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--bg-color);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            z-index: 9999;
+            transition: all 0.5s;
+        }
+
+        .loader-overlay.active {
+            display: flex;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .loader {
+            width: 80px;
+            height: 80px;
+            border: 5px solid var(--input-border);
+            border-top: 5px solid var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+            box-shadow: 0 0 20px rgba(30, 60, 114, 0.2);
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        .loader-text {
+            color: var(--primary);
+            font-weight: 600;
+            font-size: 1.2rem;
+            letter-spacing: 1px;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.5;
+            }
+        }
+
+        /* Kırmızı Hata Popup */
+        /* Renkli ve Modern Hata/Uyarı Popup */
+        .error-popup {
+            position: fixed;
+            top: 25px;
+            right: -400px;
+            width: 350px;
+            background: linear-gradient(135deg, #ff416c, #ff4b2b);
+            color: white;
+            border-radius: 20px;
+            padding: 18px 25px;
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            box-shadow: 0 15px 35px rgba(255, 65, 108, 0.4);
+            z-index: 9999;
+            transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+        }
+
+        .error-popup.warning {
+            background: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
+            box-shadow: 0 15px 35px rgba(253, 160, 133, 0.4);
+            color: #7f3f00;
+        }
+
+        .error-popup.success {
+            background: linear-gradient(135deg, #11998e, #38ef7d);
+            box-shadow: 0 15px 35px rgba(56, 239, 125, 0.4);
+            color: white;
+        }
+
+        .error-popup.show {
+            right: 25px;
+            animation: shake 0.5s ease-in-out;
+        }
+
+        @keyframes shake {
+
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+
+            25% {
+                transform: translateX(-10px);
+            }
+
+            75% {
+                transform: translateX(10px);
+            }
+        }
+
+        .error-popup i {
+            font-size: 2.2rem;
+            background: rgba(255, 255, 255, 0.25);
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 15px;
+            flex-shrink: 0;
+        }
+
+        .error-popup.warning i {
+            background: rgba(127, 63, 0, 0.1);
+            color: #7f3f00;
+        }
+
+        .error-content h4 {
+            margin: 0 0 4px 0;
+            font-size: 1.2rem;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+        }
+
+        .error-content p {
+            margin: 0;
+            font-size: 0.95rem;
+            font-weight: 500;
+            opacity: 0.9;
+            line-height: 1.4;
+        }
+
+        .error-close {
+            margin-left: auto;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .error-popup.warning .error-close {
+            background: rgba(127, 63, 0, 0.1);
+            color: #7f3f00;
+        }
+
+        .error-close:hover {
+            background: rgba(255, 255, 255, 0.4);
+            transform: rotate(90deg);
+        }
+    </style>
+    <a href="https://wa.me/905000000000" class="whatsapp-float" target="_blank">
+        <i class="fab fa-whatsapp"></i>
+    </a>
+</head>
+
+<body>
+    <!-- Loading Overlay -->
+    <div class="loader-overlay" id="loginLoader">
+        <div class="loader"></div>
+        <div class="loader-text">Sistem Hazırlanıyor...</div>
+    </div>
+
+    <button class="theme-toggle" onclick="toggleTheme()" title="Karanlık Mod">
+        <i class="fas fa-moon"></i>
+    </button>
+
+    <!-- Kırmızı Hata Popup -->
+    <div class="error-popup" id="errorPopup">
+        <i class="fas fa-exclamation-circle"></i>
+        <div class="error-content">
+            <h4 id="errorTitle">Hata!</h4>
+            <p id="errorMessage">Bilinmeyen bir hata oluştu.</p>
+        </div>
+        <button class="error-close" onclick="closeErrorPopup()"><i class="fas fa-times"></i></button>
+    </div>
+
+    <div class="login-wrapper">
+        <!-- Sol Panel -->
+        <div class="login-left">
+            <div class="logo-area">
+                <img src="resim1.png" alt="Logo"
+                    style="width: 100px; height: auto; background: rgba(255, 255, 255, 0.95); padding: 8px 12px; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.2);">
+                <div>
+                    <h1>DRİVERCAR</h1>
+                    <span>PREMIUM OTO-SİSTEM</span>
+                </div>
+            </div>
+            <h2>Geleceğin <br>Sürücüleri Buradan Yetişiyor.</h2>
+            <p>Eğitimleri planlayın, kursiyerleri yönetin ve ödemeleri kolayca takip edin. Yeni nesil sürücü kursu
+                otomasyonuna hoş geldiniz.</p>
+        </div>
+
+        <!-- Sağ Panel (Form) -->
+        <div class="login-right">
+            <h3>Hoş Geldiniz</h3>
+            <p class="subtitle">Devam etmek için giriş türünü seçiniz.</p>
+
+            <div class="role-selector">
+                <button type="button" class="role-btn active" onclick="selectRole('student', this)">
+                    <i class="fas fa-user-graduate"></i>
+                    <span>Öğrenci</span>
+                </button>
+                <button type="button" class="role-btn" onclick="selectRole('staff', this)">
+                    <i class="fas fa-user-shield"></i>
+                    <span>Personel</span>
+                </button>
+                <button type="button" class="role-btn" onclick="selectRole('instructor', this)">
+                    <i class="fas fa-chalkboard-teacher"></i>
+                    <span>Eğitmen</span>
+                </button>
+            </div>
+
+            <div class="role-indicator" id="roleIndicator">
+                <i class="fas fa-user-graduate"></i>
+                <div>
+                    <h4 id="roleTitle">Öğrenci Girişi</h4>
+                    <p id="roleDesc">Ders programınızı ve sınav sonuçlarınızı görün.</p>
+                </div>
+            </div>
+
+            <form id="loginForm">
+                <input type="hidden" id="selectedRole" value="student">
+                <div class="input-group">
+                    <label id="userLabel">T.C. Kimlik No veya Öğrenci No</label>
+                    <div class="input-with-icon">
+                        <input type="text" placeholder="Giriş bilgilerinizi yazın" required maxlength="11"
+                            oninput="validateInput(this)">
+                        <i class="fas fa-user icon-left"></i>
+                        <i class="fas fa-check validation-icon"></i>
+                        <i class="fas fa-times validation-icon"></i>
+                    </div>
+                </div>
+                <div class="input-group" style="margin-bottom: 15px;">
+                    <label>Şifreniz</label>
+                    <div class="input-with-icon">
+                        <input type="password" id="loginPass" placeholder="••••••••" minlength="5" required
+                            oninput="validateInput(this)">
+                        <i class="fas fa-lock icon-left"></i>
+                        <i class="fas fa-eye toggle-password" onclick="togglePassword('loginPass', this)"></i>
+                        <i class="fas fa-check validation-icon"></i>
+                        <i class="fas fa-times validation-icon"></i>
+                    </div>
+                    <small class="hint-text">En az 5 karakter ve 1 büyük harf yeterlidir.</small>
+                </div>
+
+                <label class="remember-me">
+                    <input type="checkbox"> Beni Hatırla
+                </label>
+
+                <button type="submit" class="login-btn">
+                    <i class="fas fa-sign-in-alt"></i> <span>Giriş Yap</span>
+                </button>
+
+                <div class="divider">
+                    <span>veya şu şekilde devam et</span>
+                </div>
+
+                <div class="social-login">
+                    <button type="button" class="social-btn" onclick="socialLogin(this, 'Google')">
+                        <i class="fab fa-google" style="color: #ea4335;"></i> <span>Google</span>
+                    </button>
+                    <button type="button" class="social-btn" onclick="socialLogin(this, 'Apple')">
+                        <i class="fab fa-apple"></i> <span>Apple</span>
+                    </button>
+                </div>
+
+                <button type="button" class="signup-btn" onclick="openModal('signupModal')">
+                    <i class="fas fa-user-plus"></i> Yeni Hesap Oluştur
+                </button>
+
+                <div class="login-footer">
+                    <button type="button" onclick="openModal('forgotPasswordModal')">
+                        <i class="fas fa-key"></i> Şifremi Unuttum
+                    </button>
+                    <button type="button" onclick="openModal('supportModal')">
+                        <i class="fas fa-headset"></i> Destek Al
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ÜYE OL MODALI -->
+    <div class="modal-overlay" id="signupModal">
+        <div class="modal-box" style="max-width: 550px;">
+            <button class="modal-close" onclick="closeModal('signupModal')"><i class="fas fa-times"></i></button>
+            <div style="text-align: center;">
+                <i class="fas fa-user-plus" style="font-size: 3rem; color: var(--primary); margin-bottom: 15px;"></i>
+                <h3 style="font-size: 1.8rem; color: var(--primary); margin-bottom: 10px;">Hemen Kayıt Olun</h3>
+                <p style="color: var(--text-light); margin-bottom: 25px;">Sisteme katılmak için bilgilerinizi eksiksiz
+                    doldurun.</p>
+            </div>
+
+            <form id="signupForm" style="text-align: left;" onsubmit="handleSignup(event)">
+                <div style="display: flex; gap: 15px; margin-bottom: 20px;">
+                    <div class="input-group" style="flex: 1; margin-bottom: 0;">
+                        <label>Adınız</label>
+                        <div class="input-with-icon">
+                            <input type="text" placeholder="Adınız" required oninput="validateInput(this)">
+                            <i class="fas fa-user icon-left"></i>
+                            <i class="fas fa-check validation-icon"></i>
+                            <i class="fas fa-times validation-icon"></i>
+                        </div>
+                    </div>
+                    <div class="input-group" style="flex: 1; margin-bottom: 0;">
+                        <label>Soyadınız</label>
+                        <div class="input-with-icon">
+                            <input type="text" placeholder="Soyadınız" required oninput="validateInput(this)">
+                            <i class="fas fa-user icon-left"></i>
+                            <i class="fas fa-check validation-icon"></i>
+                            <i class="fas fa-times validation-icon"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="input-group" style="margin-bottom: 20px;">
+                    <label>E-Posta Adresiniz</label>
+                    <div class="input-with-icon">
+                        <input type="email" placeholder="ornek@email.com" required oninput="validateInput(this)">
+                        <i class="fas fa-envelope icon-left"></i>
+                        <i class="fas fa-check validation-icon"></i>
+                        <i class="fas fa-times validation-icon"></i>
+                    </div>
+                </div>
+
+                <div class="input-group" style="margin-bottom: 20px;">
+                    <label>Telefon Numaranız</label>
+                    <div class="input-with-icon">
+                        <input type="tel" placeholder="05XX XXX XX XX"
+                            oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 11); validateInput(this);"
+                            required minlength="10">
+                        <i class="fas fa-phone icon-left"></i>
+                        <i class="fas fa-check validation-icon"></i>
+                        <i class="fas fa-times validation-icon"></i>
+                    </div>
+                </div>
+
+                <div class="input-group" style="margin-bottom: 25px;">
+                    <label>Şifre Belirleyin</label>
+                    <div class="input-with-icon">
+                        <input type="password" id="regPass" placeholder="••••••••" minlength="8" required
+                            oninput="validateInput(this)">
+                        <i class="fas fa-lock icon-left"></i>
+                        <i class="fas fa-eye toggle-password" onclick="togglePassword('regPass', this)"></i>
+                        <i class="fas fa-check validation-icon"></i>
+                        <i class="fas fa-times validation-icon"></i>
+                    </div>
+                    <small class="hint-text">En az 5 karakter ve 1 büyük harf yeterlidir.</small>
+                </div>
+
+                <button type="submit" class="action-btn" style="font-size: 1.1rem; padding: 15px;">
+                    <i class="fas fa-paper-plane" style="margin-right: 5px;"></i> Kaydı Tamamla
+                </button>
+
+                <p
+                    style="text-align: center; margin-top: 15px; font-size: 0.85rem; color: var(--text-light); margin-bottom: 0;">
+                    Kayıt olarak <a href="#"
+                        style="color: var(--primary); text-decoration: none; font-weight: 600;">Kullanım
+                        Koşulları</a>'nı kabul etmiş sayılırsınız.
+                </p>
+            </form>
+        </div>
+    </div>
+
+    <!-- ŞİFREMİ UNUTTUM MODALI -->
+    <div class="modal-overlay" id="forgotPasswordModal">
+        <div class="modal-box">
+            <button class="modal-close" onclick="closeModal('forgotPasswordModal')"><i
+                    class="fas fa-times"></i></button>
+
+            <div class="modal-step active" id="fpStep1">
+                <i class="fas fa-envelope-open-text"
+                    style="font-size: 3rem; color: var(--primary); margin-bottom: 15px;"></i>
+                <h3>Şifrenizi mi Unuttunuz?</h3>
+                <p>Sisteme kayıtlı e-posta adresinizi girin, size bir doğrulama kodu gönderelim.</p>
+                <div class="input-group" style="text-align: left;">
+                    <label>E-Posta Adresiniz</label>
+                    <div class="input-with-icon">
+                        <input type="email" id="resetEmail" placeholder="ornek@email.com" oninput="validateInput(this)">
+                        <i class="fas fa-envelope icon-left"></i>
+                        <i class="fas fa-check validation-icon"></i>
+                        <i class="fas fa-times validation-icon"></i>
+                    </div>
+                </div>
+                <button class="action-btn" onclick="nextStep(1, 2)">Doğrulama Kodu Gönder</button>
+            </div>
+
+            <div class="modal-step" id="fpStep2">
+                <i class="fas fa-shield-alt" style="font-size: 3rem; color: var(--primary); margin-bottom: 15px;"></i>
+                <h3>Kodu Girin</h3>
+                <p>E-posta adresinize gönderilen 4 haneli doğrulama kodunu giriniz.</p>
+                <div class="otp-inputs">
+                    <input type="text" maxlength="1" onkeyup="moveToNext(this, 'otp2')">
+                    <input type="text" maxlength="1" id="otp2" onkeyup="moveToNext(this, 'otp3')">
+                    <input type="text" maxlength="1" id="otp3" onkeyup="moveToNext(this, 'otp4')">
+                    <input type="text" maxlength="1" id="otp4">
+                </div>
+                <button class="action-btn" onclick="nextStep(2, 3)">Kodu Doğrula</button>
+                <button class="action-btn"
+                    style="background: var(--input-bg); color: var(--text-dark); border: 1px solid var(--input-border); margin-top: 10px;"
+                    onclick="nextStep(2, 1)">Geri Dön</button>
+            </div>
+
+            <div class="modal-step" id="fpStep3">
+                <i class="fas fa-check-circle" style="font-size: 3rem; color: var(--success); margin-bottom: 15px;"></i>
+                <h3>Yeni Şifre Belirleme</h3>
+                <p>Harika, hesabınız doğrulandı! Lütfen yeni şifrenizi girin.</p>
+                <div class="input-group" style="text-align: left;">
+                    <label>Yeni Şifreniz</label>
+                    <div class="input-with-icon">
+                        <input type="password" id="newPassword" placeholder="••••••••" minlength="8" required
+                            oninput="validateInput(this)">
+                        <i class="fas fa-lock icon-left"></i>
+                        <i class="fas fa-eye toggle-password" onclick="togglePassword('newPassword', this)"></i>
+                        <i class="fas fa-check validation-icon"></i>
+                        <i class="fas fa-times validation-icon"></i>
+                    </div>
+                    <small class="hint-text" style="display:block; margin-top:5px; font-size:0.7rem;">En az 5 karakter
+                        ve 1 büyük harf yeterlidir.</small>
+                </div>
+                <button class="action-btn" style="background: var(--success);" onclick="finishReset()">Şifremi
+                    Güncelle</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- DESTEK AL MODALI -->
+    <div class="modal-overlay" id="supportModal">
+        <div class="modal-box">
+            <button class="modal-close" onclick="closeModal('supportModal')"><i class="fas fa-times"></i></button>
+            <i class="fas fa-headset" style="font-size: 3rem; color: var(--primary); margin-bottom: 15px;"></i>
+            <h3>Nasıl Yardımcı Olabiliriz?</h3>
+            <p>Sisteme giriş yaparken veya otomasyonu kullanırken sorun yaşıyorsanız aşağıdaki kanallardan bize
+                ulaşabilirsiniz.</p>
+
+            <div class="support-card">
+                <i class="fab fa-whatsapp" style="color: #25D366;"></i>
+                <div>
+                    <h4>WhatsApp Destek Hattı</h4>
+                    <p>0850 123 45 67 (7/24 Aktif)</p>
+                </div>
+            </div>
+
+            <div class="support-card">
+                <i class="fas fa-envelope" style="color: #ea4335;"></i>
+                <div>
+                    <h4>E-Posta Desteği</h4>
+                    <p>destek@drivercar.com.tr</p>
+                </div>
+            </div>
+
+            <button class="action-btn" onclick="closeModal('supportModal')"
+                style="background: var(--input-bg); color: var(--text-dark); border: 1px solid var(--input-border);">Kapat</button>
+        </div>
+    </div>
+
+    <script>
+        // Tema Değiştirme (Dark/Light Mode)
+        function toggleTheme() {
+            const body = document.body;
+            const isDark = body.getAttribute('data-theme') === 'dark';
+            body.setAttribute('data-theme', isDark ? 'light' : 'dark');
+            const icon = document.querySelector('.theme-toggle i');
+            icon.className = isDark ? 'fas fa-moon' : 'fas fa-sun';
+        }
+
+        // Gelişmiş Hata/Uyarı Popup Gösterme
+        function showErrorAlert(title, message, type = 'error') {
+            const popup = document.getElementById('errorPopup');
+            const icon = popup.querySelector('i');
+
+            // Temizle
+            popup.classList.remove('error', 'warning', 'success');
+
+            // Tip belirle
+            if (type === 'warning') {
+                popup.classList.add('warning');
+                icon.className = 'fas fa-exclamation-triangle';
+            } else if (type === 'success') {
+                popup.classList.add('success');
+                icon.className = 'fas fa-check-circle';
+            } else {
+                popup.classList.add('error');
+                icon.className = 'fas fa-exclamation-circle';
+            }
+
+            document.getElementById('errorTitle').innerText = title;
+            document.getElementById('errorMessage').innerText = message;
+
+            popup.classList.add('show');
+
+            // Varsa eski timer'ı temizle
+            if (window.errorTimer) clearTimeout(window.errorTimer);
+
+            window.errorTimer = setTimeout(() => {
+                closeErrorPopup();
+            }, 5000);
+        }
+
+        function closeErrorPopup() {
+            document.getElementById('errorPopup').classList.remove('show');
+        }
+
+        // Form Validasyon Hatalarını Yakala
+        document.addEventListener('DOMContentLoaded', () => {
+            const forms = document.querySelectorAll('form');
+            forms.forEach(form => {
+                form.addEventListener('invalid', (e) => {
+                    e.preventDefault();
+                    showErrorAlert('Eksik Alan!', 'Lütfen tüm zorunlu alanları doldurun.', 'warning');
+                }, true);
+            });
+        });
+
+
+        // Anlık Validasyon (Yeşil Tik / Kırmızı Çarpı)
+        function validateInput(el) {
+            if (el.value.length === 0) {
+                el.classList.remove('valid', 'invalid');
+                return;
+            }
+
+            let isValid = false;
+
+            if (el.type === 'password') {
+                // Şifre: En az 5 karakter ve en az 1 büyük harf
+                const passwordRegex = /^(?=.*[A-Z]).{5,}$/;
+                isValid = passwordRegex.test(el.value);
+            } else if (el.type === 'email') {
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                isValid = emailRegex.test(el.value);
+            } else if (el.type === 'tel') {
+                isValid = el.value.length >= 10;
+            } else {
+                isValid = el.value.length > 2;
+            }
+
+            if (isValid) {
+                el.classList.add('valid');
+                el.classList.remove('invalid');
+            } else {
+                el.classList.add('invalid');
+                el.classList.remove('valid');
+            }
+        }
+
+        // Şifre Göster/Gizle
+        function togglePassword(inputId, iconElement) {
+            const input = document.getElementById(inputId);
+            if (input.type === 'password') {
+                input.type = 'text';
+                iconElement.classList.replace('fa-eye', 'fa-eye-slash');
+            } else {
+                input.type = 'password';
+                iconElement.classList.replace('fa-eye-slash', 'fa-eye');
+            }
+        }
+
+        // Rol Seçimi
+        function selectRole(role, btn) {
+            // Aktif buton değişimi
+            document.querySelectorAll('.role-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+
+            // Gizli input güncelleme
+            document.getElementById('selectedRole').value = role;
+
+            // Indicator güncelleme
+            const indicator = document.getElementById('roleIndicator');
+            const icon = indicator.querySelector('i');
+            const title = document.getElementById('roleTitle');
+            const desc = document.getElementById('roleDesc');
+            const label = document.getElementById('userLabel');
+
+            if (role === 'student') {
+                icon.className = 'fas fa-user-graduate';
+                title.innerText = 'Öğrenci Girişi';
+                desc.innerText = 'Ders programınızı ve sınav sonuçlarınızı görün.';
+                label.innerText = 'T.C. Kimlik No veya Öğrenci No';
+            } else if (role === 'staff') {
+                icon.className = 'fas fa-user-shield';
+                title.innerText = 'Personel Girişi';
+                desc.innerText = 'Kursiyer kayıt ve muhasebe yönetimi paneli.';
+                label.innerText = 'Kullanıcı Adı veya Personel ID';
+            } else if (role === 'instructor') {
+                icon.className = 'fas fa-chalkboard-teacher';
+                title.innerText = 'Eğitmen Girişi';
+                desc.innerText = 'Ders takvimi ve kursiyer değerlendirme paneli.';
+                label.innerText = 'Eğitmen ID veya T.C. Kimlik No';
+            }
+        }
+
+        // Form Gönderim Animasyonu (Fade Out)
+        document.getElementById('loginForm').onsubmit = async function (e) {
+            e.preventDefault();
+            const btn = e.target.querySelector('.login-btn');
+            const btnText = btn.querySelector('span');
+            const icon = btn.querySelector('i');
+
+            // Loading state
+            icon.className = 'fas fa-spinner fa-spin';
+            btnText.textContent = 'Doğrulanıyor...';
+            btn.style.opacity = '0.7';
+            btn.style.pointerEvents = 'none';
+
+            // Veritabanı doğrulama (Backend API)
+            fetch('http://localhost:5000/api/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    username: document.querySelector('.input-with-icon input[type="text"]').value,
+                    password: document.getElementById('loginPass').value
+                })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        let dbRole = data.user.rol || '';
+                        let mappedRole = 'student';
+                        if (dbRole === 'admin' || dbRole === 'personel') mappedRole = 'staff';
+                        if (dbRole === 'egitmen') mappedRole = 'instructor';
+
+                        const selectedRole = document.getElementById('selectedRole').value;
+                        if (mappedRole !== selectedRole) {
+                            showErrorAlert('Yetki Hatası!', 'Seçtiğiniz giriş türü ile hesap yetkiniz uyuşmuyor.');
+                            icon.className = 'fas fa-sign-in-alt';
+                            btnText.textContent = 'Giriş Yap';
+                            btn.style.opacity = '1';
+                            btn.style.pointerEvents = 'all';
+                            return;
+                        }
+
+                        // Kullanıcı bilgilerini kaydet
+                        localStorage.setItem('userRole', selectedRole);
+                        localStorage.setItem('isLoggedIn', 'true');
+                        localStorage.setItem('currentUser', JSON.stringify(data.user));
+
+                        // Yönlendirme
+                        let targetPage = "profil.html";
+                        if (selectedRole === 'staff') targetPage = "kursiyerkayit.html";
+                        if (selectedRole === 'instructor') targetPage = "egitmen.html";
+
+                        // Loading Overlay Göster
+                        document.getElementById('loginLoader').classList.add('active');
+
+                        setTimeout(() => {
+                            document.body.classList.add('fade-out');
+                            setTimeout(() => {
+                                window.location.href = targetPage;
+                            }, 500);
+                        }, 1500); // 1.5 saniye bekle
+                    } else {
+                        showErrorAlert('Giriş Başarısız!', data.message || 'Hatalı kullanıcı adı veya şifre.');
+                        // Loading reset
+                        icon.className = 'fas fa-sign-in-alt';
+                        btnText.textContent = 'Giriş Yap';
+                        btn.style.opacity = '1';
+                        btn.style.pointerEvents = 'all';
+                    }
+                })
+                .catch(err => {
+                    console.error('Hata:', err);
+                    showErrorAlert('Bağlantı Hatası!', 'Sunucuya bağlanılamadı. Lütfen Node.js sunucusunun çalıştığından emin olun.');
+                    icon.className = 'fas fa-sign-in-alt';
+                    btnText.textContent = 'Giriş Yap';
+                    btn.style.opacity = '1';
+                    btn.style.pointerEvents = 'all';
+                });
+        };
+
+        // Sosyal Medya Girişi Simülasyonu
+        function socialLogin(btn, provider) {
+            const btnText = btn.querySelector('span');
+            const icon = btn.querySelector('i');
+
+            // Loading state
+            icon.className = 'fas fa-spinner fa-spin';
+            icon.style.color = 'inherit';
+            btnText.textContent = 'Bağlanıyor...';
+            btn.style.pointerEvents = 'none';
+            btn.style.opacity = '0.8';
+
+            setTimeout(() => {
+                // Başarılı durumu
+                icon.className = 'fas fa-check-circle';
+                icon.style.color = 'var(--success)';
+                btnText.textContent = 'Başarılı!';
+
+                // Dashboard yönlendirme
+                setTimeout(() => {
+                    document.body.classList.add('fade-out');
+                    setTimeout(() => {
+                        window.location.href = "kursiyerkayit.html";
+                    }, 500);
+                }, 800);
+            }, 1500);
+        }
+
+        // Üye Ol Formu
+        function handleSignup(e) {
+            e.preventDefault();
+            alert('Kayıt işleminiz başarıyla tamamlandı! Lütfen giriş yapınız.');
+            closeModal('signupModal');
+            document.getElementById('signupForm').reset();
+            // Validasyon sınıflarını temizle
+            document.querySelectorAll('#signupForm input').forEach(inp => inp.classList.remove('valid', 'invalid'));
+        }
+
+        // Modal Yönetimi
+        function openModal(id) {
+            document.getElementById(id).classList.add('active');
+            if (id === 'forgotPasswordModal') {
+                document.getElementById('fpStep1').className = 'modal-step active';
+                document.getElementById('fpStep2').className = 'modal-step';
+                document.getElementById('fpStep3').className = 'modal-step';
+                document.getElementById('resetEmail').value = '';
+                document.getElementById('resetEmail').classList.remove('valid', 'invalid');
+            }
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.remove('active');
+        }
+
+        // Şifremi Unuttum İşlemleri
+        function nextStep(current, next) {
+            if (current === 1) {
+                const email = document.getElementById('resetEmail').value;
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(email)) {
+                    showErrorAlert('Geçersiz E-Posta!', 'Lütfen geçerli bir e-posta adresi girin!');
+                    return;
+                }
+                alert(email + ' adresine doğrulama kodu gönderildi.');
+            }
+            document.getElementById('fpStep' + current).classList.remove('active');
+            document.getElementById('fpStep' + next).classList.add('active');
+        }
+
+        function finishReset() {
+            const newPass = document.getElementById('newPassword').value;
+            const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&.])[A-Za-z\d@$!%*?&.]{8,}$/;
+            if (!passwordRegex.test(newPass)) {
+                showErrorAlert('Güvenlik Uyarısı!', 'Şifreniz kriterlere uygun değil! (En az 8 karakter, büyük harf, küçük harf, rakam olmalıdır.)');
+                return;
+            }
+            alert('Şifreniz başarıyla güncellendi! Artık yeni şifrenizle giriş yapabilirsiniz.');
+            closeModal('forgotPasswordModal');
+        }
+
+        function moveToNext(current, nextFieldID) {
+            if (current.value.length >= current.maxLength) {
+                if (nextFieldID) {
+                    document.getElementById(nextFieldID).focus();
+                }
+            }
+        }
+    </script>
+</body>
+
+</html>

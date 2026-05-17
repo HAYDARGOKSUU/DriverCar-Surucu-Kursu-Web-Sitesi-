@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kursiyer Profili | DRİVERCAR</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #1e3c72;
+            --secondary: #2a5298;
+            --success: #27ae60;
+            --warning: #f39c12;
+            --danger: #e74c3c;
+            --bg: #f4f7fe;
+            --white: #ffffff;
+            --text-dark: #1e293b;
+            --text-light: #64748b;
+            --shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            --glass: rgba(255, 255, 255, 0.9);
+        }
+
+        [data-theme="dark"] {
+            --bg: #020617;
+            --white: #1e293b;
+            --primary: #3b82f6;
+            --text-dark: #f8fafc;
+            --text-light: #94a3b8;
+            --glass: rgba(30, 41, 59, 0.95);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            display: flex;
+            min-height: 100vh;
+            color: var(--text-dark);
+            transition: all 0.4s ease;
+        }
+
+        [data-theme="dark"] body {
+            background: linear-gradient(135deg, #020617 0%, #1e1b4b 50%, #020617 100%);
+        }
+
+        /* Yan Menü (Sidebar) */
+        .sidebar {
+            width: 280px;
+            background: rgba(30, 60, 114, 0.95);
+            backdrop-filter: blur(15px);
+            color: white;
+            padding: 30px 20px;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 10px 0 30px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            height: 100vh;
+        }
+
+        .logo-area {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .logo-area i {
+            font-size: 3.5rem;
+            margin-bottom: 15px;
+            filter: drop-shadow(0 5px 15px rgba(0, 0, 0, 0.3));
+        }
+
+        .menu-item {
+            padding: 16px 20px;
+            margin-bottom: 8px;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: 0.4s;
+            display: flex;
+            align-items: center;
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .menu-item i {
+            margin-right: 15px;
+            font-size: 1.3rem;
+            width: 30px;
+            text-align: center;
+        }
+
+        .menu-item:hover,
+        .menu-item.active {
+            background: rgba(255, 255, 255, 0.15);
+            color: white;
+            transform: translateX(8px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Ana İçerik */
+        .main-content {
+            flex: 1;
+            padding: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(5px);
+        }
+
+        .profile-header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 20px;
+            padding: 40px;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 30px;
+            margin-bottom: 30px;
+            box-shadow: var(--shadow);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .profile-header::after {
+            content: '';
+            position: absolute;
+            top: -50px;
+            right: -50px;
+            width: 200px;
+            height: 200px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+        }
+
+        .profile-img-container {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            border: 5px solid rgba(255, 255, 255, 0.3);
+            overflow: hidden;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .profile-img-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .profile-info h1 {
+            font-size: 2rem;
+            margin-bottom: 5px;
+        }
+
+        .profile-info p {
+            opacity: 0.9;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .status-badge {
+            background: var(--success);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-top: 10px;
+            display: inline-block;
+        }
+
+        .grid-profile {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 30px;
+        }
+
+        .card {
+            background: var(--white);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: var(--shadow);
+            margin-bottom: 30px;
+        }
+
+        .card-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 2px solid var(--bg);
+            padding-bottom: 10px;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .info-row:last-child {
+            border-bottom: none;
+        }
+
+        .info-label {
+            color: var(--text-light);
+            font-weight: 500;
+        }
+
+        .info-value {
+            font-weight: 600;
+        }
+
+        .progress-card {
+            text-align: center;
+        }
+
+        .circular-progress {
+            width: 150px;
+            height: 150px;
+            margin: 0 auto 20px;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .circular-progress svg {
+            width: 100%;
+            height: 100%;
+            transform: rotate(-90deg);
+        }
+
+        .circular-progress circle {
+            fill: none;
+            stroke-width: 10;
+            stroke-linecap: round;
+        }
+
+        .circle-bg {
+            stroke: var(--bg);
+        }
+
+        .circle-progress {
+            stroke: var(--success);
+            stroke-dasharray: 440;
+            stroke-dashoffset: 110;
+            /* %75 */
+            transition: stroke-dashoffset 1s ease-in-out;
+        }
+
+        .percentage {
+            position: absolute;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .lesson-list {
+            list-style: none;
+        }
+
+        .lesson-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            background: var(--bg);
+            border-radius: 12px;
+            margin-bottom: 10px;
+        }
+
+        .lesson-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--white);
+            border-radius: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: var(--primary);
+        }
+
+        .lesson-details h4 {
+            font-size: 0.9rem;
+            margin-bottom: 2px;
+        }
+
+        .lesson-details p {
+            font-size: 0.75rem;
+            color: var(--text-light);
+        }
+
+        .whatsapp-float {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            background-color: #25d366;
+            color: #fff;
+            border-radius: 50%;
+            text-align: center;
+            font-size: 30px;
+            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+        .whatsapp-float:hover {
+            transform: scale(1.1);
+            background-color: #128c7e;
+        }
+
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            color: white;
+            cursor: pointer;
+            backdrop-filter: blur(5px);
+            transition: 0.3s;
+        }
+
+        .theme-toggle:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        @media (max-width: 1024px) {
+            .grid-profile {
+                grid-template-columns: 1fr;
+            }
+        }
+        /* Renkli ve Modern Hata/Uyarı Popup */
+        .toast-container {
+            position: fixed;
+            top: 25px;
+            right: -400px;
+            width: 350px;
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            color: white;
+            border-radius: 20px;
+            padding: 18px 25px;
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            box-shadow: 0 15px 35px rgba(30, 60, 114, 0.4);
+            z-index: 9999;
+            transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+        }
+
+        .toast-container.warning {
+            background: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
+            box-shadow: 0 15px 35px rgba(253, 160, 133, 0.4);
+            color: #7f3f00;
+        }
+
+        .toast-container.success {
+            background: linear-gradient(135deg, #11998e, #38ef7d);
+            box-shadow: 0 15px 35px rgba(56, 239, 125, 0.4);
+            color: white;
+        }
+
+        .toast-container.error {
+            background: linear-gradient(135deg, #ff416c, #ff4b2b);
+            box-shadow: 0 15px 35px rgba(255, 65, 108, 0.4);
+            color: white;
+        }
+
+        .toast-container.show {
+            right: 25px;
+            animation: shake 0.5s ease-in-out;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        .toast-container i {
+            font-size: 2.2rem;
+            background: rgba(255, 255, 255, 0.25);
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 15px;
+            flex-shrink: 0;
+        }
+
+        .toast-container.warning i {
+            background: rgba(127, 63, 0, 0.1);
+            color: #7f3f00;
+        }
+
+        .toast-content h4 {
+            margin: 0 0 4px 0;
+            font-size: 1.2rem;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+        }
+
+        .toast-content p {
+            margin: 0;
+            font-size: 0.95rem;
+            font-weight: 500;
+            opacity: 0.9;
+            line-height: 1.4;
+        }
+
+        .toast-close {
+            margin-left: auto;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .toast-container.warning .toast-close {
+            background: rgba(127, 63, 0, 0.1);
+            color: #7f3f00;
+        }
+
+        .toast-close:hover {
+            background: rgba(255, 255, 255, 0.4);
+            transform: rotate(90deg);
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="sidebar">
+        <div class="logo-area" style="flex-direction: column; justify-content: center; padding-left: 0; gap: 10px; text-align: center;">
+            <img src="resim1.png" alt="Logo" style="width: 100px; height: auto; background: rgba(255, 255, 255, 0.95); padding: 8px 12px; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.2);">
+            <h2>DRİVERCAR</h2>
+        </div>
+        <div id="sidebar-links">
+            <!-- Dinamik Linkler Buraya Gelecek -->
+        </div>
+    </div>
+
+    <!-- Renkli Toast Bildirimi -->
+    <div class="toast-container" id="toast">
+        <i class="fas fa-info-circle"></i>
+        <div class="toast-content">
+            <h4 id="toastTitle">Bildirim</h4>
+            <p id="toastMessage">İşlem başarıyla tamamlandı.</p>
+        </div>
+        <button class="toast-close" onclick="closeToast()"><i class="fas fa-times"></i></button>
+    </div>
+
+    <div class="main-content">
+        <div class="profile-header">
+            <button class="theme-toggle" onclick="toggleTheme()"><i class="fas fa-moon"></i></button>
+            <div class="profile-img-container">
+                <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=1000&auto=format&fit=crop"
+                    alt="Profil">
+            </div>
+            <div class="profile-info">
+                <h1 id="profName">Ahmet Yılmaz</h1>
+                <p><i class="fas fa-id-card"></i> <span id="profID">TC: 12345678901</span></p>
+                <p><i class="fas fa-car"></i> <span id="profSub">B Sınıfı Ehliyet Programı</span></p>
+                <div class="status-badge" id="profStatus">Aktif Kursiyer</div>
+            </div>
+        </div>
+
+        <div class="grid-profile">
+            <div class="left-col">
+                <div class="card">
+                    <div class="card-title"><i class="fas fa-user"></i> <span id="cardTitle1">Kişisel Bilgiler</span>
+                    </div>
+                    <div id="personalInfoList">
+                        <div class="info-row">
+                            <span class="info-label">Ad Soyad</span>
+                            <span class="info-value">Ahmet Yılmaz</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">E-Posta</span>
+                            <span class="info-value">ahmet.yilmaz@email.com</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Telefon</span>
+                            <span class="info-value">0532 123 45 67</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-title"><i class="fas fa-book"></i> <span id="cardTitle2">Eğitim Detayları</span>
+                    </div>
+                    <div id="detailInfoList">
+                        <div class="info-row">
+                            <span class="info-label">Kayıt Tarihi</span>
+                            <span class="info-value">12.03.2024</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="right-col">
+                <div class="card progress-card" id="progressCard">
+                    <div class="card-title"><i class="fas fa-tasks"></i> Genel İlerleme</div>
+                    <div class="circular-progress">
+                        <svg>
+                            <circle class="circle-bg" cx="75" cy="75" r="70"></circle>
+                            <circle class="circle-progress" cx="75" cy="75" r="70"></circle>
+                        </svg>
+                        <div class="percentage">75%</div>
+                    </div>
+                    <p style="font-size: 0.9rem; color: var(--text-light);">Ehliyet almanız için kalan süreç</p>
+                </div>
+
+                <div class="card" id="recentCard">
+                    <div class="card-title"><i class="fas fa-calendar-check"></i> <span id="recentTitle">Son
+                            Dersler</span></div>
+                    <div class="lesson-list" id="lessonList">
+                        <!-- JS ile dolacak -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <a href="https://wa.me/905000000000" class="whatsapp-float" target="_blank">
+        <i class="fab fa-whatsapp"></i>
+    </a>
+
+    <script>
+        // Renkli Bildirim Sistemi
+        function showToast(title, message, type = 'success') {
+            const toast = document.getElementById('toast');
+            const icon = toast.querySelector('i');
+            
+            toast.classList.remove('success', 'warning', 'error');
+            toast.classList.add(type);
+            
+            if (type === 'success') icon.className = 'fas fa-check-circle';
+            else if (type === 'warning') icon.className = 'fas fa-exclamation-triangle';
+            else if (type === 'error') icon.className = 'fas fa-exclamation-circle';
+
+            document.getElementById('toastTitle').innerText = title;
+            document.getElementById('toastMessage').innerText = message;
+            
+            toast.classList.add('show');
+            if (window.toastTimer) clearTimeout(window.toastTimer);
+            window.toastTimer = setTimeout(closeToast, 5000);
+        }
+
+        function closeToast() {
+            document.getElementById('toast').classList.remove('show');
+        }
+
+        /**
+         * Tema Değiştirme Fonksiyonu
+         * Kullanıcının tercihini (Karanlık/Aydınlık) localStorage üzerinde saklar.
+         */
+        function toggleTheme() {
+            const body = document.body;
+            const isDark = body.getAttribute('data-theme') === 'dark';
+            const newTheme = isDark ? 'light' : 'dark';
+            body.setAttribute('data-theme', newTheme);
+            document.documentElement.setAttribute('data-theme', newTheme);
+            const icon = document.querySelector('.theme-toggle i');
+            if (icon) icon.className = isDark ? 'fas fa-moon' : 'fas fa-sun';
+            localStorage.setItem('theme', newTheme);
+        }
+
+        /**
+         * Sayfa Yüklendiğinde Çalışan Ana Fonksiyon
+         * Kullanıcı rolüne göre menüyü ve verileri hazırlar.
+         */
+        document.addEventListener('DOMContentLoaded', () => {
+            const role = localStorage.getItem('userRole') || 'student';
+            const theme = localStorage.getItem('theme') || 'light';
+
+            // Kayıtlı temayı uygula
+            if (theme === 'dark') {
+                document.body.setAttribute('data-theme', 'dark');
+                document.documentElement.setAttribute('data-theme', 'dark');
+                const icon = document.querySelector('.theme-toggle i');
+                if (icon) icon.className = 'fas fa-sun';
+            }
+
+            // Sol menü linklerini yetkiye göre dinamik oluştur
+            const sidebarLinks = document.getElementById('sidebar-links');
+            let links = '';
+
+            if (role === 'student') {
+                links = `
+                    <a href="profil.html" class="menu-item active"><i class="fas fa-user-circle"></i> Profilim</a>
+                    <a href="suruslerim.html" class="menu-item"><i class="fas fa-steering-wheel"></i> Sürüşlerim</a>
+                    <a href="giris.html" class="menu-item" onclick="localStorage.clear()"><i class="fas fa-sign-out-alt"></i> Çıkış Yap</a>
+                `;
+                loadStudentData();
+            } else if (role === 'instructor') {
+                links = `
+                    <a href="egitmen.html" class="menu-item"><i class="fas fa-chalkboard-teacher"></i> Eğitmen Paneli</a>
+                    <a href="kursiyerlistesi.html" class="menu-item"><i class="fas fa-list-ul"></i> Öğrencilerim</a>
+                    <a href="suruspratikleri.html" class="menu-item"><i class="fas fa-steering-wheel"></i> Sürüş Pratikleri</a>
+                    <a href="profil.html" class="menu-item active"><i class="fas fa-user-circle"></i> Profilim</a>
+                    <a href="giris.html" class="menu-item" onclick="localStorage.clear()"><i class="fas fa-sign-out-alt"></i> Çıkış Yap</a>
+                `;
+                loadInstructorData();
+            } else {
+                links = `
+                    <a href="kursiyerkayit.html" class="menu-item"><i class="fas fa-user-plus"></i> Kursiyer Kayıt</a>
+                    <a href="kursiyerlistesi.html" class="menu-item"><i class="fas fa-list-ul"></i> Kursiyer Listesi</a>
+                    <a href="suruspratikleri.html" class="menu-item"><i class="fas fa-steering-wheel"></i> Sürüş Pratikleri</a>
+                    <a href="araclar.html" class="menu-item"><i class="fas fa-car"></i> Araç Filosu</a>
+                    <a href="egitmen.html" class="menu-item"><i class="fas fa-chalkboard-teacher"></i> Eğitmen Yönetimi</a>
+                    <a href="muhasebe.html" class="menu-item"><i class="fas fa-credit-card"></i> Muhasebe</a>
+                    <a href="istatistikler.html" class="menu-item"><i class="fas fa-chart-line"></i> İstatistikler</a>
+                    <a href="sistemayarlari.html" class="menu-item"><i class="fas fa-cog"></i> Sistem Ayarları</a>
+                    <a href="giris.html" class="menu-item" onclick="localStorage.clear()"><i class="fas fa-sign-out-alt"></i> Çıkış Yap</a>
+                `;
+                // URL'de TC parametresi varsa o kursiyeri, yoksa yöneticinin kendi profilini yükle
+                const urlParams = new URLSearchParams(window.location.search);
+                if (urlParams.get('tc')) {
+                    loadStudentData();
+                } else {
+                    loadAdminData();
+                }
+            }
+            sidebarLinks.innerHTML = links;
+        });
+
+        /**
+         * Yönetici Profil Verilerini Yükleme
+         */
+        function loadAdminData() {
+            const currentUser = JSON.parse(localStorage.getItem('currentUser')) || {};
+
+            document.getElementById('profName').innerText = currentUser.ad_soyad || "Yönetici";
+            document.getElementById('profID').innerText = "Kullanıcı Adı: " + (currentUser.kullanici_adi || "-");
+            document.getElementById('profSub').innerText = "Sistem Yönetim Yetkilisi";
+            document.getElementById('profStatus').innerText = (currentUser.rol || "admin").toUpperCase();
+            document.getElementById('profStatus').style.background = "var(--primary)";
+
+            document.getElementById('personalInfoList').innerHTML = `
+                <div class="info-row"><span class="info-label">Ad Soyad</span><span class="info-value">${currentUser.ad_soyad || '-'}</span></div>
+                <div class="info-row"><span class="info-label">Yetki Seviyesi</span><span class="info-value">${currentUser.rol || '-'}</span></div>
+                <div class="info-row"><span class="info-label">Sistem Kayıt</span><span class="info-value">Aktif</span></div>
+            `;
+
+            document.getElementById('detailInfoList').innerHTML = `
+                <div class="info-row"><span class="info-label">Görev</span><span class="info-value">Yönetim ve Finans</span></div>
+                <div class="info-row"><span class="info-label">Erişim</span><span class="info-value">Tam Yetki</span></div>
+            `;
+
+            document.getElementById('progressCard').style.display = 'none';
+            document.getElementById('recentTitle').innerText = "Sistem Bildirimleri";
+            document.getElementById('lessonList').innerHTML = `
+                <div class="lesson-item"><div class="lesson-icon"><i class="fas fa-shield-alt"></i></div><div class="lesson-details"><h4>Güvenlik Paneli</h4><p>Sistem güvenliği üst düzeyde.</p></div></div>
+            `;
+        }
+
+        /**
+         * Kursiyer Verilerini API'den Çekme
+         */
+        function loadStudentData() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const tc = urlParams.get('tc');
+
+            if (tc) {
+                // Backend'den belirli bir kursiyeri getir
+                fetch(`http://localhost:5000/api/students/${tc}`)
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.error) {
+                            showToast('Hata!', 'Kursiyer bulunamadı!', 'error');
+                            return;
+                        }
+                        renderStudent(data);
+                    })
+                    .catch(err => console.error("Veri yükleme hatası:", err));
+            } else {
+                // Gerçek veritabanından en son kaydedilen kursiyeri getir
+                fetch('http://localhost:5000/api/students')
+                    .then(res => res.json())
+                    .then(students => {
+                        if (students && students.length > 0) {
+                            // En son eklenen öğrenciyi al
+                            const lastStudent = students[students.length - 1];
+                            renderStudent(lastStudent);
+                        } else {
+                            // Eğer veritabanında hiç öğrenci yoksa varsayılan göster
+                            const currentUser = JSON.parse(localStorage.getItem('currentUser')) || {};
+                            renderStudent({
+                                ad: currentUser.ad_soyad ? currentUser.ad_soyad.split(' ')[0] : "Ahmet",
+                                soyad: currentUser.ad_soyad ? currentUser.ad_soyad.split(' ').slice(1).join(' ') : "Yılmaz",
+                                tc_no: "Giriş Yapıldı",
+                                ehliyet_sinifi: "B",
+                                eposta: (currentUser.kullanici_adi || "kursiyer") + "@drivercar.com",
+                                telefon: "N/A",
+                                kan_grubu: "-",
+                                kayit_tarihi: new Date().toISOString(),
+                                odeme_turu: "Nakit",
+                                odeme_sekli: "Peşin"
+                            });
+                        }
+                    })
+                    .catch(err => console.error("Veri yükleme hatası:", err));
+            }
+        }
+
+        /**
+         * Kursiyer Bilgilerini Sayfaya Giydirme
+         */
+        function renderStudent(data) {
+            const fullName = `${data.ad} ${data.soyad}`;
+            document.getElementById('profName').innerText = fullName;
+            document.getElementById('profID').innerText = "TC: " + data.tc_no;
+            document.getElementById('profSub').innerText = data.ehliyet_sinifi + " Sınıfı Ehliyet Programı";
+            document.getElementById('profStatus').innerText = data.durum || "Aktif Kursiyer";
+
+            // Eğer fotoğraf varsa göster, yoksa varsayılan kalır
+            if (data.fotograf_url) {
+                document.querySelector('.profile-img-container img').src = data.fotograf_url;
+            }
+
+            document.getElementById('personalInfoList').innerHTML = `
+                <div class="info-row"><span class="info-label">Ad Soyad</span><span class="info-value">${fullName}</span></div>
+                <div class="info-row"><span class="info-label">E-Posta</span><span class="info-value">${data.eposta || '-'}</span></div>
+                <div class="info-row"><span class="info-label">Telefon</span><span class="info-value">${data.telefon || '-'}</span></div>
+                <div class="info-row"><span class="info-label">Kan Grubu</span><span class="info-value">${data.kan_grubu || '-'}</span></div>
+            `;
+
+            document.getElementById('detailInfoList').innerHTML = `
+                <div class="info-row"><span class="info-label">Kayıt Tarihi</span><span class="info-value">${new Date(data.kayit_tarihi).toLocaleDateString('tr-TR')}</span></div>
+                <div class="info-row"><span class="info-label">Ödeme Durumu</span><span class="info-value" style="color:var(--success);">${data.odeme_turu || 'Nakit'} (${data.odeme_sekli || 'Peşin'})</span></div>
+                <div class="info-row"><span class="info-label">Ehliyet Sınıfı</span><span class="info-value">${data.ehliyet_sinifi}</span></div>
+            `;
+
+            document.getElementById('lessonList').innerHTML = `
+                <div class="lesson-item"><div class="lesson-icon"><i class="fas fa-steering-wheel"></i></div><div class="lesson-details"><h4>Sürüş Eğitimi</h4><p>Planlanan dersler yakında eklenecek.</p></div></div>
+            `;
+        }
+
+        /**
+         * Eğitmen Profil Bilgilerini Yükleme
+         */
+        function loadInstructorData() {
+            fetch('http://localhost:5000/api/instructors')
+                .then(res => res.json())
+                .then(instructors => {
+                    if (instructors && instructors.length > 0) {
+                        const data = instructors[0]; // İlk eğitmeni alıyoruz (Örn: Mehmet Özcan)
+
+                        document.getElementById('profName').innerText = data.ad_soyad;
+                        document.getElementById('profID').innerText = "TC: " + data.tc_no;
+                        document.getElementById('profSub').innerText = (data.uzmanlik_alani || "Sürücü Eğitmeni") + " Uzmanı";
+                        document.getElementById('profStatus').innerText = data.durum || "Aktif";
+                        document.getElementById('profStatus').style.background = "var(--primary)";
+
+                        if (data.fotograf_url) {
+                            document.querySelector('.profile-img-container img').src = data.fotograf_url;
+                        }
+
+                        document.getElementById('cardTitle2').innerText = "Profesyonel Bilgiler";
+                        document.getElementById('personalInfoList').innerHTML = `
+                            <div class="info-row"><span class="info-label">Ad Soyad</span><span class="info-value">${data.ad_soyad}</span></div>
+                            <div class="info-row"><span class="info-label">Telefon</span><span class="info-value">${data.telefon || "-"}</span></div>
+                            <div class="info-row"><span class="info-label">Uzmanlık</span><span class="info-value">${data.uzmanlik_alani || "Genel Eğitmen"}</span></div>
+                            <div class="info-row"><span class="info-label">Durum</span><span class="info-value">${data.durum || "Aktif"}</span></div>
+                        `;
+
+                        document.getElementById('detailInfoList').innerHTML = `
+                            <div class="info-row"><span class="info-label">İşe Başlama</span><span class="info-value">${data.is_baslangic_tarihi ? new Date(data.is_baslangic_tarihi).toLocaleDateString('tr-TR') : "-"}</span></div>
+                            <div class="info-row"><span class="info-label">Maaş Bilgisi</span><span class="info-value" style="color:var(--success);">₺${parseFloat(data.maas || 0).toLocaleString('tr-TR')}</span></div>
+                            <div class="info-row"><span class="info-label">Sertifika</span><span class="info-value">MEB Onaylı</span></div>
+                        `;
+
+                        document.getElementById('progressCard').style.display = 'none';
+                        document.getElementById('recentTitle').innerText = "Atanan Araçlar";
+                        document.getElementById('lessonList').innerHTML = `
+                            <div class="lesson-item"><div class="lesson-icon"><i class="fas fa-car"></i></div><div class="lesson-details"><h4>Sistem Araçları</h4><p>Filo üzerinden atanmış araçlar.</p></div></div>
+                        `;
+                    } else {
+                        // Eğitmen yoksa hata basmak yerine boş bırak (veya fallback yap)
+                        document.getElementById('profName').innerText = "Eğitmen Bulunamadı";
+                    }
+                })
+                .catch(err => console.error("Eğitmen verisi yüklenemedi:", err));
+        }
+    </script>
+</body>
+
+</html>

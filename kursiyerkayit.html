@@ -1,0 +1,1815 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sürücü Kursu Pro | Premium Otomasyon</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --primary: #1e3c72;
+            --secondary: #2a5298;
+            --success: #27ae60;
+            --warning: #f39c12;
+            --danger: #e74c3c;
+            --bg: #f4f7fe;
+            --white: #ffffff;
+            --shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            --glass: rgba(255, 255, 255, 0.95);
+        }
+
+        [data-theme="dark"] {
+            --bg: #0f172a;
+            --white: #1e293b;
+            --primary: #3b82f6;
+            --glass: rgba(30, 41, 59, 0.95);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            display: flex;
+            min-height: 100vh;
+            color: #1e293b;
+            transition: all 0.3s ease;
+        }
+
+        [data-theme="dark"] body {
+            background: linear-gradient(135deg, #020617 0%, #1e1b4b 50%, #020617 100%);
+            color: #f1f5f9;
+        }
+
+        /* Yan Menü (Sidebar) */
+        .sidebar {
+            width: 280px;
+            background: rgba(30, 60, 114, 0.98);
+            backdrop-filter: blur(10px);
+            color: white;
+            padding: 30px 20px;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 10px 0 30px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            z-index: 100;
+        }
+
+        .logo-area {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .logo-area i {
+            font-size: 3.5rem;
+            margin-bottom: 15px;
+            filter: drop-shadow(0 5px 15px rgba(0, 0, 0, 0.3));
+        }
+
+        .menu-item {
+            padding: 16px 20px;
+            margin-bottom: 8px;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .menu-item i {
+            margin-right: 15px;
+            font-size: 1.3rem;
+            width: 30px;
+            text-align: center;
+        }
+
+        .menu-item:hover,
+        .menu-item.active {
+            background: rgba(255, 255, 255, 0.15);
+            color: white;
+            transform: translateX(8px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Ana İçerik Alanı */
+        .main-content {
+            flex: 1;
+            padding: 40px;
+            overflow-y: auto;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(5px);
+        }
+
+        /* Stepper (İlerleme Çubuğu) Geliştirilmiş */
+        .stepper-container {
+            width: 100%;
+            max-width: 700px;
+            margin: 0 auto 50px;
+            position: relative;
+        }
+
+        .stepper {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+        }
+
+        .stepper::before {
+            content: '';
+            position: absolute;
+            top: 25px;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: #cbd5e0;
+            z-index: 1;
+            border-radius: 2px;
+        }
+
+        .progress-line {
+            position: absolute;
+            top: 25px;
+            left: 0;
+            height: 4px;
+            background: var(--success);
+            z-index: 1;
+            border-radius: 2px;
+            transition: width 0.4s ease;
+            width: 0%;
+        }
+
+        .step-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            z-index: 2;
+            gap: 10px;
+            cursor: pointer;
+            width: 120px;
+        }
+
+        .step {
+            background: #cbd5e0;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            color: white;
+            transition: all 0.4s ease;
+            position: relative;
+            box-shadow: 0 0 0 5px var(--bg);
+        }
+
+        .step-text {
+            font-size: 0.85rem;
+            color: #64748b;
+            font-weight: 500;
+            transition: 0.4s;
+            text-align: center;
+        }
+
+        /* Aktif Adım */
+        .step-wrapper.active .step {
+            background: var(--primary);
+            box-shadow: 0 0 0 5px rgba(30, 60, 114, 0.2), 0 0 0 10px var(--bg);
+            transform: scale(1.1);
+        }
+
+        .step-wrapper.active .step-text {
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        /* Tamamlanmış Adım */
+        .step-wrapper.completed .step {
+            background: var(--success);
+            box-shadow: 0 0 0 5px rgba(39, 174, 96, 0.2), 0 0 0 10px var(--bg);
+        }
+
+        .step-wrapper.completed .step-text {
+            color: var(--success);
+        }
+
+        /* Kart Yapısı */
+        .form-container {
+            max-width: 900px;
+            margin: 0 auto;
+            animation: slideUp 0.6s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .card {
+            background: var(--white);
+            border-radius: 20px;
+            padding: 35px;
+            box-shadow: var(--shadow);
+            margin-bottom: 30px;
+            border: 1px solid rgba(0, 0, 0, 0.02);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 25px;
+            color: var(--primary);
+        }
+
+        .card-header i {
+            font-size: 1.5rem;
+            margin-right: 15px;
+        }
+
+        /* Fotoğraf Yükleme Geliştirilmiş */
+        .photo-upload-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+            margin-bottom: 30px;
+            background: linear-gradient(145deg, #f8f9fa, #e9ecef);
+            padding: 25px;
+            border-radius: 16px;
+            border: 1px solid rgba(0, 0, 0, 0.03);
+            box-shadow: inset 0 2px 4px rgba(255, 255, 255, 0.8);
+        }
+
+        .profile-image-container {
+            position: relative;
+            width: 130px;
+            height: 130px;
+            border-radius: 50%;
+            overflow: hidden;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+            border: 4px solid white;
+            background: #cbd5e1;
+            flex-shrink: 0;
+        }
+
+        .profile-preview {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: 0.3s;
+            background-color: #cbd5e1;
+        }
+
+        .image-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 40px;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            transition: 0.3s;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .profile-image-container:hover .image-overlay {
+            opacity: 1;
+        }
+
+        .upload-info h4 {
+            color: var(--primary);
+            margin-bottom: 5px;
+            font-size: 1.1rem;
+        }
+
+        .upload-info p {
+            color: #64748b;
+            font-size: 0.85rem;
+            margin-bottom: 15px;
+        }
+
+        .upload-btn-wrapper {
+            position: relative;
+            display: inline-block;
+        }
+
+        .btn-upload {
+            border: none;
+            background: var(--primary);
+            color: white;
+            padding: 10px 25px;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 10px rgba(30, 60, 114, 0.2);
+        }
+
+        .btn-upload:hover {
+            background: var(--secondary);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(30, 60, 114, 0.3);
+        }
+
+        .upload-btn-wrapper input[type=file] {
+            position: absolute;
+            left: 0;
+            top: 0;
+            opacity: 0;
+            cursor: pointer;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Grid Sistemi */
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .grid-1 {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+
+        /* Responsive Grid Adjustments */
+        @media (max-width: 768px) {
+
+            .grid-3,
+            .grid-2 {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            font-size: 0.85rem;
+            color: #555;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #e0e0e0;
+            border-radius: 10px;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        .form-group input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 8px rgba(30, 60, 114, 0.1);
+        }
+
+        /* İkonlu Form Elemanları */
+        .input-with-icon {
+            position: relative;
+        }
+
+        .input-with-icon i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #94a3b8;
+            font-size: 1.1rem;
+            transition: 0.3s;
+            pointer-events: none;
+        }
+
+        .input-with-icon input,
+        .input-with-icon select {
+            padding-left: 45px !important;
+        }
+
+        .input-with-icon input:focus~i,
+        .input-with-icon select:focus~i {
+            color: var(--primary);
+        }
+
+        .input-with-icon select {
+            cursor: pointer;
+            appearance: none;
+        }
+
+        /* Kaydet Butonu */
+        .btn-save {
+            background: var(--success);
+            color: white;
+            border: none;
+            padding: 15px 45px;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            float: right;
+            box-shadow: 0 5px 15px rgba(39, 174, 96, 0.3);
+        }
+
+        .btn-save:hover {
+            transform: scale(1.03);
+            background: #219150;
+        }
+
+        /* Renkli ve Modern Bildirim Sistemi */
+        #toast {
+            position: fixed;
+            top: 25px;
+            right: -400px;
+            width: 350px;
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            color: white;
+            border-radius: 20px;
+            padding: 18px 25px;
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            box-shadow: 0 15px 35px rgba(30, 60, 114, 0.4);
+            z-index: 9999;
+            transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            visibility: visible; /* opacity ile kontrol edeceğiz */
+            opacity: 0;
+            text-align: left;
+        }
+
+        #toast.warning {
+            background: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
+            box-shadow: 0 15px 35px rgba(253, 160, 133, 0.4);
+            color: #7f3f00;
+        }
+
+        #toast.success {
+            background: linear-gradient(135deg, #11998e, #38ef7d);
+            box-shadow: 0 15px 35px rgba(56, 239, 125, 0.4);
+            color: white;
+        }
+
+        #toast.error {
+            background: linear-gradient(135deg, #ff416c, #ff4b2b);
+            box-shadow: 0 15px 35px rgba(255, 65, 108, 0.4);
+            color: white;
+        }
+
+        #toast.show {
+            right: 30px;
+            opacity: 1;
+            animation: shake 0.5s ease-in-out;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        #toast i {
+            font-size: 2.2rem;
+            background: rgba(255, 255, 255, 0.25);
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 15px;
+            flex-shrink: 0;
+        }
+
+        #toast.warning i {
+            background: rgba(127, 63, 0, 0.1);
+            color: #7f3f00;
+        }
+
+        .toast-content h4 {
+            margin: 0 0 4px 0;
+            font-size: 1.2rem;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+        }
+
+        .toast-content p {
+            margin: 0;
+            font-size: 0.95rem;
+            font-weight: 500;
+            opacity: 0.9;
+            line-height: 1.4;
+        }
+
+
+        /* YENİ EKLENEN CSS'LER */
+        [data-theme="dark"] {
+            --bg: #121212;
+            --white: #1e1e1e;
+            --primary: #4e82e8;
+            --text-color: #f1f1f1;
+            --border-color: #333;
+        }
+
+        [data-theme="dark"] body {
+            color: var(--text-color);
+        }
+
+        [data-theme="dark"] .sidebar {
+            background: #1a1a1a;
+            border-right: 1px solid #333;
+        }
+
+        [data-theme="dark"] .card {
+            background: #1e1e1e;
+            border: 1px solid #333;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        [data-theme="dark"] .form-group input,
+        [data-theme="dark"] .form-group select,
+        [data-theme="dark"] .form-group textarea {
+            background: #2d2d2d;
+            color: #fff;
+            border-color: #444;
+        }
+
+        [data-theme="dark"] .stepper::before {
+            background: #333;
+        }
+
+        [data-theme="dark"] .step {
+            background: #333;
+            box-shadow: 0 0 0 5px #121212;
+        }
+
+        [data-theme="dark"] .input-with-icon i {
+            color: #888;
+        }
+
+        [data-theme="dark"] .photo-upload-wrapper {
+            background: #2d2d2d;
+            border-color: #444;
+        }
+
+        /* Top Header & Search */
+        .top-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .search-box {
+            position: relative;
+            width: 350px;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 12px 15px 12px 45px;
+            border-radius: 20px;
+            border: 1px solid #e0e0e0;
+            outline: none;
+            background: var(--white);
+            color: inherit;
+        }
+
+        .search-box i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #999;
+        }
+
+        .header-actions button {
+            background: var(--white);
+            border: 1px solid #e0e0e0;
+            padding: 10px 15px;
+            border-radius: 12px;
+            cursor: pointer;
+            margin-left: 10px;
+            font-size: 1.1rem;
+            color: #555;
+            transition: 0.3s;
+        }
+
+        .header-actions button:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* Dashboard Stats */
+        .dashboard-stats {
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: var(--white);
+            padding: 20px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(0, 0, 0, 0.02);
+            transition: transform 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-card i {
+            font-size: 2.5rem;
+            background: rgba(0, 0, 0, 0.05);
+            padding: 15px;
+            border-radius: 12px;
+        }
+
+        .stat-card h4 {
+            font-size: 0.9rem;
+            color: #777;
+            margin-bottom: 5px;
+        }
+
+        .stat-card p {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: inherit;
+        }
+
+        /* Drag & Drop */
+        .photo-upload-wrapper.dragover {
+            border: 2px dashed var(--primary);
+            background: rgba(30, 60, 114, 0.05);
+        }
+
+        /* Print Media */
+        @media print {
+
+            .sidebar,
+            .top-header,
+            .stepper-container,
+            .btn-save,
+            .upload-btn-wrapper,
+            .dashboard-stats {
+                display: none !important;
+            }
+
+            .main-content {
+                padding: 0;
+            }
+
+            .card {
+                box-shadow: none;
+                border: none;
+                margin-bottom: 10px;
+                padding: 10px;
+            }
+
+            body {
+                background: white;
+                color: black;
+            }
+        }
+
+        .whatsapp-float {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            background-color: #25d366;
+            color: #fff;
+            border-radius: 50%;
+            text-align: center;
+            font-size: 30px;
+            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+        .whatsapp-float:hover {
+            transform: scale(1.1);
+            background-color: #128c7e;
+            box-shadow: 2px 2px 20px rgba(0, 0, 0, 0.3);
+        }
+    </style>
+    <a href="https://wa.me/905000000000" class="whatsapp-float" target="_blank">
+        <i class="fab fa-whatsapp"></i>
+    </a>
+</head>
+
+<body>
+
+    <div class="sidebar">
+        <div class="logo-area" style="flex-direction: column; justify-content: center; padding-left: 0; gap: 10px; text-align: center;">
+            <img src="resim1.png" alt="Logo" style="width: 100px; height: auto; background: rgba(255, 255, 255, 0.95); padding: 8px 12px; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.2);">
+            <h2>DRİVERCAR</h2>
+        </div>
+        <a href="kursiyerkayit.html" class="menu-item active"><i class="fas fa-user-plus"></i> Kursiyer Kayıt</a>
+        <a href="kursiyerlistesi.html" class="menu-item"><i class="fas fa-list-ul"></i> Kursiyer Listesi</a>
+        <a href="suruspratikleri.html" class="menu-item"><i class="fas fa-steering-wheel"></i> Sürüş Pratikleri</a>
+        <a href="araclar.html" class="menu-item"><i class="fas fa-car"></i> Araç Filosu</a>
+        <a href="egitmen.html" class="menu-item"><i class="fas fa-chalkboard-teacher"></i> Eğitmen Yönetimi</a>
+        <a href="muhasebe.html" class="menu-item"><i class="fas fa-credit-card"></i> Muhasebe</a>
+        <a href="istatistikler.html" class="menu-item"><i class="fas fa-chart-line"></i> İstatistikler</a>
+        <a href="sistemayarlari.html" class="menu-item"><i class="fas fa-cog"></i> Sistem Ayarları</a>
+    </div>
+
+    <!-- Renkli Toast Bildirimi -->
+    <div id="toast">
+        <i class="fas fa-info-circle"></i>
+        <div class="toast-content">
+            <h4>Bildirim</h4>
+            <p>İşlem başarıyla tamamlandı.</p>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="top-header">
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" placeholder="Kursiyer Ara (TC, Ad, Soyad)..." id="searchInput"
+                    onkeyup="searchKursiyer()">
+            </div>
+            <div class="header-actions">
+                <button type="button" onclick="window.print()" class="btn-print" title="PDF / Çıktı Al"><i
+                        class="fas fa-print"></i></button>
+                <button type="button" onclick="toggleTheme()" class="btn-theme" title="Karanlık Mod"><i
+                        class="fas fa-moon"></i></button>
+            </div>
+        </div>
+
+        <div class="dashboard-stats grid-3">
+            <div class="stat-card">
+                <i class="fas fa-users" style="color:var(--primary);"></i>
+                <div class="stat-info">
+                    <h4>Toplam Kayıtlı</h4>
+                    <p id="stat-total">142</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-check-circle" style="color:var(--success);"></i>
+                <div class="stat-info">
+                    <h4>Aktif Kursiyer</h4>
+                    <p id="stat-active">89</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-wallet" style="color:#f39c12;"></i>
+                <div class="stat-info">
+                    <h4>Bekleyen Ödeme</h4>
+                    <p id="stat-payment">12</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="stepper-container">
+            <div class="progress-line" id="progressLine"></div>
+            <div class="stepper">
+                <div class="step-wrapper active" id="stepWrapper1" onclick="focusCard('card1')">
+                    <div class="step"><i class="fas fa-user"></i></div>
+                    <span class="step-text">Kişisel Bilgiler</span>
+                </div>
+                <div class="step-wrapper" id="stepWrapper4" onclick="focusCard('cardDoc')">
+                    <div class="step"><i class="fas fa-file-invoice"></i></div>
+                    <span class="step-text">Evrak Takibi</span>
+                </div>
+                <div class="step-wrapper" id="stepWrapper2" onclick="focusCard('card2')">
+                    <div class="step"><i class="fas fa-steering-wheel"></i></div>
+                    <span class="step-text">Eğitim & Sınav</span>
+                </div>
+                <div class="step-wrapper" id="stepWrapper3" onclick="focusCard('card3')">
+                    <div class="step"><i class="fas fa-cash-register"></i></div>
+                    <span class="step-text">Ödeme Bilgileri</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-container">
+            <form id="fullProjectForm">
+
+                <div class="card" id="card1">
+                    <div class="card-header"><i class="fas fa-id-card-alt"></i>
+                        <h3>Kişisel Bilgiler</h3>
+                    </div>
+
+                    <div class="photo-upload-wrapper" id="dropZone">
+                        <div class="profile-image-container">
+                            <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23ffffff'><path d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/></svg>"
+                                id="preview" class="profile-preview">
+                            <div class="image-overlay"><i class="fas fa-camera"></i></div>
+                        </div>
+                        <div class="upload-info">
+                            <h4>Profil Fotoğrafı</h4>
+                            <p>JPG, PNG veya GIF formatında, maksimum 2MB boyutunda dosya yükleyebilirsiniz.</p>
+                            <div class="upload-btn-wrapper">
+                                <button type="button" class="btn-upload"><i class="fas fa-cloud-upload-alt"></i> Dosya
+                                    Seç</button>
+                                <input type="file" id="imgInput" accept="image/*" onchange="previewImage(this)">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="grid-3">
+                        <div class="form-group">
+                            <label>T.C. Kimlik No <span style="color:var(--danger)">*</span></label>
+                            <div class="input-with-icon">
+                                <input type="text" id="tcKimlik" placeholder="11 Haneli TC Kimlik No" required
+                                    maxlength="11" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 11)"
+                                    onblur="autoFillTC()">
+                                <i class="fas fa-id-badge"></i>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Adı <span style="color:var(--danger)">*</span></label>
+                            <div class="input-with-icon">
+                                <input type="text" id="ad" placeholder="Kursiyerin Adı" required>
+                                <i class="fas fa-user"></i>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Soyadı <span style="color:var(--danger)">*</span></label>
+                            <div class="input-with-icon">
+                                <input type="text" id="soyad" placeholder="Kursiyerin Soyadı" required>
+                                <i class="fas fa-user-tag"></i>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+                    <div class="grid-3">
+                        <div class="form-group">
+                            <label>Doğum Tarihi</label>
+                            <div class="input-with-icon">
+                                <input type="date" style="cursor:pointer; color:var(--primary); font-family:inherit;">
+                                <i class="fas fa-calendar-alt"></i>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Cinsiyet</label>
+                            <div class="input-with-icon">
+                                <select>
+                                    <option value="" disabled selected>Seçiniz</option>
+                                    <option value="Erkek">Erkek</option>
+                                    <option value="Kadın">Kadın</option>
+                                </select>
+                                <i class="fas fa-venus-mars"></i>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Kan Grubu</label>
+                            <div class="input-with-icon">
+                                <select>
+                                    <option value="" disabled selected>Seçiniz</option>
+                                    <option value="A+">A Rh (+)</option>
+                                    <option value="A-">A Rh (-)</option>
+                                    <option value="B+">B Rh (+)</option>
+                                    <option value="B-">B Rh (-)</option>
+                                    <option value="AB+">AB Rh (+)</option>
+                                    <option value="AB-">AB Rh (-)</option>
+                                    <option value="0+">0 Rh (+)</option>
+                                    <option value="0-">0 Rh (-)</option>
+                                </select>
+                                <i class="fas fa-tint"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="grid-2">
+                        <div class="form-group">
+                            <label>Telefon <span style="color:var(--danger)">*</span></label>
+                            <div class="input-with-icon">
+                                <input type="tel" id="telefon" placeholder="05XX XXX XX XX" required maxlength="15"
+                                    oninput="formatPhone(this)">
+                                <i class="fas fa-phone-alt"></i>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>E-Posta Adresi <span style="color:var(--danger)">*</span></label>
+                            <div class="input-with-icon">
+                                <input type="email" placeholder="ornek@gmail.com" required>
+                                <i class="fas fa-envelope"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="grid-2">
+                        <div class="form-group">
+                            <label>Öğrenim Durumu</label>
+                            <div class="input-with-icon">
+                                <select>
+                                    <option value="" disabled selected>Seçiniz</option>
+                                    <option value="İlkokul">İlkokul</option>
+                                    <option value="Ortaokul">Ortaokul</option>
+                                    <option value="Lise">Lise</option>
+                                    <option value="Önlisans">Önlisans</option>
+                                    <option value="Lisans">Lisans</option>
+                                    <option value="Yüksek Lisans">Yüksek Lisans</option>
+                                </select>
+                                <i class="fas fa-graduation-cap"></i>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Meslek</label>
+                            <div class="input-with-icon">
+                                <input type="text" placeholder="Kursiyerin Mesleği">
+                                <i class="fas fa-briefcase"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="grid-2">
+                        <div class="form-group">
+                            <label>İl</label>
+                            <div class="input-with-icon">
+                                <select id="ilSecim" onchange="ilceDoldur()" required>
+                                    <option value="" disabled selected>İl Seçiniz</option>
+                                </select>
+                                <i class="fas fa-city"></i>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>İlçe</label>
+                            <div class="input-with-icon">
+                                <select id="ilceSecim" required>
+                                    <option value="" disabled selected>Önce İl Seçiniz</option>
+                                </select>
+                                <i class="fas fa-map"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="grid-1">
+                        <div class="form-group">
+                            <label>Açık İkametgah Adresi</label>
+                            <div class="input-with-icon" style="height: auto;">
+                                <textarea placeholder="Açık Adres (Mahalle, Sokak, No vb.)"
+                                    style="width:100%; padding:15px; padding-left:45px; border:1px solid #e0e0e0; border-radius:10px; min-height:80px; resize:vertical; font-family:inherit; outline:none; transition:0.3s;"></textarea>
+                                <i class="fas fa-map-marker-alt" style="top: 25px; transform: none;"></i>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+                    <div class="card" id="cardDoc">
+                        <div class="card-header"><i class="fas fa-file-signature"></i>
+                            <h3>Gerekli Evraklar (Checklist & Yükleme)</h3>
+                        </div>
+                        <div class="grid-2">
+                            <div style="background: #f8fafc; padding: 15px; border-radius: 12px; border: 1px solid #e2e8f0; display: flex; flex-direction: column; gap: 10px;">
+                                <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+                                    <input type="checkbox" id="check_adli_sicil" style="width: 20px; height: 20px;">
+                                    <span>Adli Sicil Kaydı (E-Devlet)</span>
+                                </label>
+                                <input type="file" id="file_adli_sicil" accept=".pdf,image/*" style="font-size: 0.8rem;">
+                            </div>
+                            <div style="background: #f8fafc; padding: 15px; border-radius: 12px; border: 1px solid #e2e8f0; display: flex; flex-direction: column; gap: 10px;">
+                                <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+                                    <input type="checkbox" id="check_diploma" style="width: 20px; height: 20px;">
+                                    <span>Öğrenim Belgesi / Diploma</span>
+                                </label>
+                                <input type="file" id="file_diploma" accept=".pdf,image/*" style="font-size: 0.8rem;">
+                            </div>
+                            <div style="background: #f8fafc; padding: 15px; border-radius: 12px; border: 1px solid #e2e8f0; display: flex; flex-direction: column; gap: 10px;">
+                                <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+                                    <input type="checkbox" id="check_kimlik" style="width: 20px; height: 20px;">
+                                    <span>Kimlik Fotokopisi</span>
+                                </label>
+                                <input type="file" id="file_kimlik" accept=".pdf,image/*" style="font-size: 0.8rem;">
+                            </div>
+                            <div style="background: #f8fafc; padding: 15px; border-radius: 12px; border: 1px solid #e2e8f0; display: flex; flex-direction: column; gap: 10px;">
+                                <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+                                    <input type="checkbox" id="check_saglik_raporu" style="width: 20px; height: 20px;">
+                                    <span>Sağlık Raporu (Sürücü Olur)</span>
+                                </label>
+                                <input type="file" id="file_saglik_raporu" accept=".pdf,image/*" style="font-size: 0.8rem;">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card" id="card2">
+                        <div class="card-header"><i class="fas fa-steering-wheel"></i>
+                            <h3>Ehliyet Sınıfı, Eğitmen ve Sınav Takibi</h3>
+                        </div>
+                        <div class="grid-2">
+                            <div class="form-group">
+                                <label>Alınacak Ehliyet Sınıfı</label>
+                                <div class="input-with-icon">
+                                    <select id="ehliyetSinifi" onchange="ehliyetSinifiDegisti()">
+                                        <optgroup label="Motosiklet Grubu">
+                                            <option value="M">M Sınıfı (Moped)</option>
+                                            <option value="A1">A1 Sınıfı (125cc'ye kadar)</option>
+                                            <option value="A2">A2 Sınıfı (35kW'a kadar)</option>
+                                            <option value="A">A Sınıfı (Sınırsız Motosiklet)</option>
+                                        </optgroup>
+                                        <optgroup label="Otomobil & Kamyonet">
+                                            <option value="B1">B1 Sınıfı (4 Tekerlekli Motosiklet)</option>
+                                            <option value="B" selected>B Sınıfı (Otomobil / Kamyonet)</option>
+                                            <option value="BE">BE Sınıfı (Römorklu Otomobil)</option>
+                                        </optgroup>
+                                        <optgroup label="Ağır Vasıta (Kamyon/Tır)">
+                                            <option value="C1">C1 Sınıfı (Kamyon - Hafif)</option>
+                                            <option value="C">C Sınıfı (Kamyon ve Çekici)</option>
+                                            <option value="CE">CE Sınıfı (Römorklu Kamyon - Tır)</option>
+                                        </optgroup>
+                                        <optgroup label="Yolcu Taşıma (Otobüs/Minibüs)">
+                                            <option value="D1">D1 Sınıfı (Minibüs)</option>
+                                            <option value="D">D Sınıfı (Otobüs)</option>
+                                        </optgroup>
+                                    </select>
+                                    <i class="fas fa-id-card"></i>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Vites Tercihi</label>
+                                <div class="input-with-icon">
+                                    <select>
+                                        <option>Manuel Vites</option>
+                                        <option>Otomatik Vites</option>
+                                    </select>
+                                    <i class="fas fa-cogs"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="grid-2">
+                            <div class="form-group">
+                                <label>Atanacak Eğitmen</label>
+                                <div class="input-with-icon">
+                                    <select>
+                                        <option value="" disabled selected>Eğitmen Seçiniz</option>
+                                        <option>Mehmet Özcan (B Sınıfı Uzmanı)</option>
+                                        <option>Selin Aydın (A/A2 Sınıfı Uzmanı)</option>
+                                        <option>Hasan Kaya (C/D Sınıfı Uzmanı)</option>
+                                    </select>
+                                    <i class="fas fa-chalkboard-teacher"></i>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Eğitim Aracı</label>
+                                <div class="input-with-icon">
+                                    <select>
+                                        <option value="" disabled selected>Araç Seçiniz</option>
+                                        <option>06 ABC 123 - VW Golf (Manuel)</option>
+                                        <option>34 XYZ 789 - Hyundai i20 (Otomatik)</option>
+                                        <option>07 ANT 07 - Mercedes Axor</option>
+                                    </select>
+                                    <i class="fas fa-car"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div
+                            style="background: #fff9db; padding: 20px; border-radius: 12px; border: 1px solid #ffe066; margin-top: 10px;">
+                            <h4 style="margin-bottom: 15px; color: #856404;"><i class="fas fa-clipboard-check"></i>
+                                Sınav Süreç Bilgileri</h4>
+                            <div class="grid-2">
+                                <div class="form-group">
+                                    <label>e-Sınav Randevu Tarihi</label>
+                                    <input type="date">
+                                </div>
+                                <div class="form-group">
+                                    <label>e-Sınav Başarı Puanı</label>
+                                    <input type="number" placeholder="Henüz girilmedi" max="100">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="grid-3" style="margin-top: 20px;">
+                            <div class="form-group">
+                                <label>Sınıf Kapasitesi</label>
+                                <div class="input-with-icon">
+                                    <input type="text" id="sinifKapasitesi" value="24" disabled
+                                        style="background: #f1f1f1;">
+                                    <i class="fas fa-users"></i>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Mevcut Sayı</label>
+                                <div class="input-with-icon">
+                                    <input type="text" id="mevcutSayi" value="18" disabled style="background: #f1f1f1;">
+                                    <i class="fas fa-user-check"></i>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Durum</label>
+                                <div class="input-with-icon"
+                                    style="padding: 12px; border: 1px solid #e0e0e0; border-radius: 10px; background: #f8f9fa;">
+                                    <p id="sinifDurumu"
+                                        style="color: var(--success); font-weight: 600; font-size: 0.9rem; margin-left: 25px;">
+                                        Kayıt Yapılabilir</p>
+                                    <i class="fas fa-info-circle"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card" id="card3">
+                        <div class="card-header"><i class="fas fa-cash-register"></i>
+                            <h3>Ödeme ve Taksit Yapılandırma</h3>
+                        </div>
+
+                        <div class="grid-3">
+                            <div class="form-group">
+                                <label>Toplam Kurs Ücreti (TL)</label>
+                                <div class="input-with-icon">
+                                    <input type="number" id="kursUcreti" placeholder="Örn: 18000"
+                                        oninput="hibritHesapla()">
+                                    <i class="fas fa-lira-sign"></i>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Ödeme Türü</label>
+                                <div class="input-with-icon">
+                                    <select id="anaOdemeTuru" onchange="odemeDetaylariniYonet()">
+                                        <option value="nakit">Nakit Ödeme (Elden)</option>
+                                        <option value="kredi_karti">Kredi Kartı</option>
+                                        <option value="havale">EFT / Havale</option>
+                                    </select>
+                                    <i class="fas fa-wallet"></i>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Ödeme Şekli</label>
+                                <div class="input-with-icon">
+                                    <select id="odemeSekli" onchange="odemeDetaylariniYonet()">
+                                        <option value="tek">Tek Seferde (Peşin)</option>
+                                        <option value="taksitli">Taksitli Ödeme</option>
+                                    </select>
+                                    <i class="fas fa-money-check-alt"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="taksitPaneli"
+                            style="display: none; background: #f8f9fa; padding: 20px; border-radius: 12px; margin-top: 15px; border: 1px solid #e2e8f0;">
+                            <div class="grid-3">
+                                <div class="form-group">
+                                    <label>Taksit Sayısı</label>
+                                    <div class="input-with-icon">
+                                        <select id="taksitSayisi" onchange="hibritHesapla()">
+                                            <option value="2">2 Taksit</option>
+                                            <option value="3">3 Taksit</option>
+                                            <option value="6">6 Taksit</option>
+                                            <option value="9">9 Taksit</option>
+                                            <option value="12">12 Taksit</option>
+                                        </select>
+                                        <i class="fas fa-list-ol"></i>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label>Peşinat Tutarı (Varsa)</label>
+                                    <div class="input-with-icon">
+                                        <input type="number" id="pesinat" placeholder="Örn: 2000"
+                                            oninput="hibritHesapla()">
+                                        <i class="fas fa-hand-holding-usd"></i>
+                                    </div>
+                                </div>
+                                <div class="form-group" id="kartBilgiNotu" style="display:none;">
+                                    <label>Banka / Bonus</label>
+                                    <div class="input-with-icon">
+                                        <input type="text" placeholder="Örn: Garanti / Axess">
+                                        <i class="fas fa-credit-card"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="bankaNotu"
+                            style="display: none; font-size: 0.8rem; color: #666; margin-top: 10px; padding: 10px; border-left: 3px solid var(--primary);">
+                            <i class="fas fa-info-circle"></i> IBAN: TR00 1111 2222 3333 4444 55 (İş Bankası - Ehliyet
+                            Pro
+                            Otomasyon)
+                        </div>
+
+                        <div id="ozetEkrani"
+                            style="margin-top: 20px; padding: 15px; border-radius: 10px; background: var(--primary); color: white; display: none;">
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <span><i class="fas fa-calculator"></i> Ödeme Özeti:</span>
+                                <span id="hesapDetayText" style="font-weight: 500;"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn-save">
+                        <i class="fas fa-user-check"></i> Kursiyeri Sisteme Ekle
+                    </button>
+
+            </form>
+        </div>
+    </div>
+
+    <div id="toast">
+        <div style="font-size: 1.2rem; margin-bottom: 5px;">🎉 İşlem Başarılı!</div>
+        <div style="font-size: 0.9rem; opacity: 0.9;">Kayıt Başarıyla Gerçekleştirildi.</div>
+    </div>
+
+    <script>
+        // 1. YENİ: Ödeme Panellerini Yöneten Fonksiyon
+        function odemeDetaylariniYonet() {
+            const anaTur = document.getElementById('anaOdemeTuru').value;
+            const sekil = document.getElementById('odemeSekli').value;
+
+            const taksitPaneli = document.getElementById('taksitPaneli');
+            const bankaNotu = document.getElementById('bankaNotu');
+            const kartBilgiNotu = document.getElementById('kartBilgiNotu');
+
+            // Taksit Paneli Kontrolü (Nakit de olsa taksit seçilince açılmasını sağlar)
+            taksitPaneli.style.display = (sekil === 'taksitli') ? 'block' : 'none';
+
+            // Banka notu (Havale seçilirse)
+            bankaNotu.style.display = (anaTur === 'havale') ? 'block' : 'none';
+
+            // Kredi Kartı ve Taksit ise banka ismi sorsun
+            kartBilgiNotu.style.display = (anaTur === 'kredi_karti' && sekil === 'taksitli') ? 'block' : 'none';
+
+            hibritHesapla();
+        }
+
+        // 2. YENİ: Taksit ve Ücret Hesaplayan Matematiksel Fonksiyon
+        function hibritHesapla() {
+            const ucret = parseFloat(document.getElementById('kursUcreti').value) || 0;
+            const sekil = document.getElementById('odemeSekli').value;
+            const taksitSayisi = parseInt(document.getElementById('taksitSayisi').value);
+            const pesinat = parseFloat(document.getElementById('pesinat').value) || 0;
+
+            const ozetEkrani = document.getElementById('ozetEkrani');
+            const detayText = document.getElementById('hesapDetayText');
+
+            if (ucret > 0) {
+                ozetEkrani.style.display = 'block';
+
+                if (sekil === 'tek') {
+                    detayText.innerText = "Toplam " + ucret + " TL Peşin Ödeme";
+                } else {
+                    let kalan = ucret - pesinat;
+                    let aylik = (kalan / taksitSayisi).toFixed(2);
+                    detayText.innerText = pesinat + " TL Peşinat + (" + taksitSayisi + " Ay x " + aylik + " TL)";
+                }
+            } else {
+                ozetEkrani.style.display = 'none';
+            }
+        }
+
+        // 3. Fotoğraf Önizleme Mantığı
+        const imgInput = document.getElementById('imgInput');
+        const preview = document.getElementById('preview');
+        imgInput.onchange = evt => {
+            const [file] = imgInput.files;
+            if (file) { preview.src = URL.createObjectURL(file); }
+        }
+
+        // 4. Form Gönderim Simülasyonu artık en altta yönetiliyor.
+
+        // 5. Ehliyet Sınıfı Seçimine Göre Kapasite ve Durum Güncellemesi
+        const ehliyetVerileri = {
+            "M": { kapasite: 20, mevcut: 15 },
+            "A1": { kapasite: 25, mevcut: 25 }, // Kontenjan dolu örneği
+            "A2": { kapasite: 30, mevcut: 12 },
+            "A": { kapasite: 15, mevcut: 5 },
+            "B1": { kapasite: 20, mevcut: 18 }, // Son 2 kişi örneği
+            "B": { kapasite: 24, mevcut: 18 },
+            "BE": { kapasite: 15, mevcut: 10 },
+            "C1": { kapasite: 10, mevcut: 10 },
+            "C": { kapasite: 12, mevcut: 6 },
+            "CE": { kapasite: 10, mevcut: 4 },
+            "D1": { kapasite: 15, mevcut: 7 },
+            "D": { kapasite: 20, mevcut: 19 },
+            "F": { kapasite: 10, mevcut: 2 },
+            "G": { kapasite: 10, mevcut: 9 }
+        };
+
+        function ehliyetSinifiDegisti() {
+            const secilenSinif = document.getElementById('ehliyetSinifi').value;
+            const veri = ehliyetVerileri[secilenSinif];
+
+            const kapasiteInput = document.getElementById('sinifKapasitesi');
+            const mevcutInput = document.getElementById('mevcutSayi');
+            const durumP = document.getElementById('sinifDurumu');
+
+            if (veri) {
+                kapasiteInput.value = veri.kapasite;
+                mevcutInput.value = veri.mevcut;
+
+                if (veri.mevcut >= veri.kapasite) {
+                    durumP.innerText = "Kontenjan Dolu";
+                    durumP.style.color = "#dc3545"; // Kırmızı
+                } else if (veri.kapasite - veri.mevcut <= 5) {
+                    durumP.innerText = "Son " + (veri.kapasite - veri.mevcut) + " Kişi";
+                    durumP.style.color = "#ff9800"; // Turuncu
+                } else {
+                    durumP.innerText = "Kayıt Yapılabilir";
+                    durumP.style.color = "var(--success)"; // Yeşil
+                }
+            }
+        }
+
+        // Sayfa yüklendiğinde varsayılan değerleri ayarla
+        document.addEventListener('DOMContentLoaded', () => {
+            ehliyetSinifiDegisti();
+            ilDoldur();
+        });
+
+        // --- 81 İL VE İLÇE VERİLERİ (DİNAMİK SELECT İÇİN) ---
+        const ilIlceVerisi = {
+            "Adana": ["Aladağ", "Ceyhan", "Çukurova", "Feke", "İmamoğlu", "Karaisalı", "Karataş", "Kozan", "Pozantı", "Saimbeyli", "Sarıçam", "Seyhan", "Tufanbeyli", "Yumurtalık", "Yüreğir"],
+            "Adıyaman": ["Besni", "Çelikhan", "Gerger", "Gölbaşı", "Kahta", "Merkez", "Samsat", "Sincik", "Tut"],
+            "Afyonkarahisar": ["Başmakçı", "Bayat", "Bolvadin", "Çay", "Çobanlar", "Dazkırı", "Dinar", "Emirdağ", "Evciler", "Hocalar", "İhsaniye", "İscehisar", "Kızılören", "Merkez", "Sandıklı", "Sinanpaşa", "Sultandağı", "Şuhut"],
+            "Ağrı": ["Diyadin", "Doğubayazıt", "Eleşkirt", "Hamur", "Merkez", "Patnos", "Taşlıçay", "Tutak"],
+            "Amasya": ["Göynücek", "Gümüşhacıköy", "Hamamözü", "Merkez", "Merzifon", "Suluova", "Taşova"],
+            "Ankara": ["Akyurt", "Altındağ", "Ayaş", "Bala", "Beypazarı", "Çamlıdere", "Çankaya", "Çubuk", "Elmadağ", "Etimesgut", "Evren", "Gölbaşı", "Güdül", "Haymana", "Kahramankazan", "Kalecik", "Keçiören", "Kızılcahamam", "Mamak", "Nallıhan", "Polatlı", "Pursaklar", "Sincan", "Şereflikoçhisar", "Yenimahalle"],
+            "Antalya": ["Akseki", "Aksu", "Alanya", "Demre", "Döşemealtı", "Elmalı", "Finike", "Gazipaşa", "Gündoğmuş", "İbradı", "Kaş", "Kemer", "Kepez", "Konyaaltı", "Korkuteli", "Kumluca", "Manavgat", "Muratpaşa", "Serik"],
+            "Artvin": ["Ardanuç", "Arhavi", "Borçka", "Hopa", "Kemalpaşa", "Merkez", "Murgul", "Şavşat", "Yusufeli"],
+            "Aydın": ["Bozdoğan", "Buharkent", "Çine", "Didim", "Efeler", "Germencik", "İncirliova", "Karacasu", "Karpuzlu", "Koçarlı", "Köşk", "Kuşadası", "Kuyucak", "Nazilli", "Söke", "Sultanhisar", "Yenipazar"],
+            "Balıkesir": ["Altıeylül", "Ayvalık", "Balya", "Bandırma", "Bigadiç", "Burhaniye", "Dursunbey", "Edremit", "Erdek", "Gömeç", "Gönen", "Havran", "İvrindi", "Karesi", "Kepsut", "Manyas", "Marmara", "Savaştepe", "Sındırgı", "Susurluk"],
+            "Bilecik": ["Bozüyük", "Gölpazarı", "İnhisar", "Merkez", "Osmaneli", "Pazaryeri", "Söğüt", "Yenipazar"],
+            "Bingöl": ["Adaklı", "Genç", "Karlıova", "Kiğı", "Merkez", "Solhan", "Yayladere", "Yedisu"],
+            "Bitlis": ["Adilcevaz", "Ahlat", "Güroymak", "Hizan", "Merkez", "Mutki", "Tatvan"],
+            "Bolu": ["Dörtdivan", "Gerede", "Göynük", "Kıbrıscık", "Mengen", "Merkez", "Mudurnu", "Seben", "Yeniçağa"],
+            "Burdur": ["Ağlasun", "Altınyayla", "Bucak", "Çavdır", "Çeltikçi", "Gölhisar", "Karamanlı", "Kemer", "Merkez", "Tefenni", "Yeşilova"],
+            "Bursa": ["Büyükorhan", "Gemlik", "Gürsu", "Harmancık", "İnegöl", "İznik", "Karacabey", "Keles", "Kestel", "Mudanya", "Mustafakemalpaşa", "Nilüfer", "Orhaneli", "Orhangazi", "Osmangazi", "Yenişehir", "Yıldırım"],
+            "Çanakkale": ["Ayvacık", "Bayramiç", "Biga", "Bozcaada", "Çan", "Eceabat", "Ezine", "Gelibolu", "Gökçeada", "Lapseki", "Merkez", "Yenice"],
+            "Çankırı": ["Atkaracalar", "Bayramören", "Çerkeş", "Eldivan", "Ilgaz", "Kızılırmak", "Korgun", "Kurşunlu", "Merkez", "Orta", "Şabanözü", "Yapraklı"],
+            "Çorum": ["Alaca", "Bayat", "Boğazkale", "Dodurga", "İskilip", "Kargı", "Laçin", "Mecitözü", "Merkez", "Oğuzlar", "Ortaköy", "Osmancık", "Sungurlu", "Uğurludağ"],
+            "Denizli": ["Acıpayam", "Babadağ", "Baklan", "Bekilli", "Beyağaç", "Bozkurt", "Buldan", "Çal", "Çameli", "Çardak", "Çivril", "Güney", "Honaz", "Kale", "Merkezefendi", "Pamukkale", "Sarayköy", "Serinhisar", "Tavas"],
+            "Diyarbakır": ["Bağlar", "Bismil", "Çermik", "Çınar", "Çüngüş", "Dicle", "Eğil", "Ergani", "Hani", "Hazro", "Kayapınar", "Kocaköy", "Kulp", "Lice", "Silvan", "Sur", "Yenişehir"],
+            "Edirne": ["Enez", "Havsa", "İpsala", "Keşan", "Lalapaşa", "Meriç", "Merkez", "Süloğlu", "Uzunköprü"],
+            "Elazığ": ["Ağın", "Alacakaya", "Arıcak", "Baskil", "Karakoçan", "Keban", "Kovancılar", "Maden", "Merkez", "Palu", "Sivrice"],
+            "Erzincan": ["Çayırlı", "İliç", "Kemah", "Kemaliye", "Merkez", "Otlukbeli", "Refahiye", "Tercan", "Üzümlü"],
+            "Erzurum": ["Aşkale", "Aziziye", "Çat", "Hınıs", "Horasan", "İspir", "Karaçoban", "Karayazı", "Köprüköy", "Narman", "Oltu", "Olur", "Palandöken", "Pasinler", "Pazaryolu", "Şenkaya", "Tekman", "Tortum", "Uzundere", "Yakutiye"],
+            "Eskişehir": ["Alpu", "Beylikova", "Çifteler", "Günyüzü", "Han", "İnönü", "Mahmudiye", "Mihalgazi", "Mihalıççık", "Odunpazarı", "Sarıcakaya", "Seyitgazi", "Sivrihisar", "Tepebaşı"],
+            "Gaziantep": ["Araban", "İslahiye", "Karkamış", "Nizip", "Nurdağı", "Oğuzeli", "Şahinbey", "Şehitkamil", "Yavuzeli"],
+            "Giresun": ["Alucra", "Bulancak", "Çamoluk", "Çanakçı", "Dereli", "Doğankent", "Espiye", "Eynesil", "Görele", "Güce", "Keşap", "Merkez", "Piraziz", "Şebinkarahisar", "Tirebolu", "Yağlıdere"],
+            "Gümüşhane": ["Kelkit", "Köse", "Kürtün", "Merkez", "Şiran", "Torul"],
+            "Hakkari": ["Çukurca", "Derecik", "Merkez", "Şemdinli", "Yüksekova"],
+            "Hatay": ["Altınözü", "Antakya", "Arsuz", "Belen", "Defne", "Dörtyol", "Erzin", "Hassa", "İskenderun", "Kırıkhan", "Kumlu", "Payas", "Reyhanlı", "Samandağ", "Yayladağı"],
+            "Isparta": ["Aksu", "Atabey", "Eğirdir", "Gelendost", "Gönen", "Keçiborlu", "Merkez", "Senirkent", "Sütçüler", "Şarkikaraağaç", "Uluborlu", "Yalvaç", "Yenişarbademli"],
+            "Mersin": ["Akdeniz", "Anamur", "Aydıncık", "Bozyazı", "Çamlıyayla", "Erdemli", "Gülnar", "Mezitli", "Mut", "Silifke", "Tarsus", "Toroslar", "Yenişehir"],
+            "İstanbul": ["Adalar", "Arnavutköy", "Ataşehir", "Avcılar", "Bağcılar", "Bahçelievler", "Bakırköy", "Başakşehir", "Bayrampaşa", "Beşiktaş", "Beykoz", "Beylikdüzü", "Beyoğlu", "Büyükçekmece", "Çatalca", "Çekmeköy", "Esenler", "Esenyurt", "Eyüpsultan", "Fatih", "Gaziosmanpaşa", "Güngören", "Kadıköy", "Kağıthane", "Kartal", "Küçükçekmece", "Maltepe", "Pendik", "Sancaktepe", "Sarıyer", "Silivri", "Sultanbeyli", "Sultangazi", "Şile", "Şişli", "Tuzla", "Ümraniye", "Üsküdar", "Zeytinburnu"],
+            "İzmir": ["Aliağa", "Balçova", "Bayındır", "Bayraklı", "Bergama", "Beydağ", "Bornova", "Buca", "Çeşme", "Çiğli", "Dikili", "Foça", "Gaziemir", "Güzelbahçe", "Karabağlar", "Karaburun", "Karşıyaka", "Kemalpaşa", "Kınık", "Kiraz", "Konak", "Menderes", "Menemen", "Narlıdere", "Ödemiş", "Seferihisar", "Selçuk", "Tire", "Torbalı", "Urla"],
+            "Kars": ["Akyaka", "Arpaçay", "Digor", "Kağızman", "Merkez", "Sarıkamış", "Selim", "Susuz"],
+            "Kastamonu": ["Abana", "Ağlı", "Araç", "Azdavay", "Bozkurt", "Cide", "Çatalzeytin", "Daday", "Devrekani", "Doğanyurt", "Hanönü", "İhsangazi", "İnebolu", "Küre", "Merkez", "Pınarbaşı", "Seydiler", "Şenpazar", "Taşköprü", "Tosya"],
+            "Kayseri": ["Akkışla", "Bünyan", "Develi", "Felahiye", "Hacılar", "İncesu", "Kocasinan", "Melikgazi", "Özvatan", "Pınarbaşı", "Sarıoğlan", "Sarız", "Talas", "Tomarza", "Yahyalı", "Yeşilhisar"],
+            "Kırklareli": ["Babaeski", "Demirköy", "Kofçaz", "Lüleburgaz", "Merkez", "Pehlivanköy", "Pınarhisar", "Vize"],
+            "Kırşehir": ["Akçakent", "Akpınar", "Boztepe", "Çiçekdağı", "Kaman", "Merkez", "Mucur"],
+            "Kocaeli": ["Başiskele", "Çayırova", "Darıca", "Derince", "Dilovası", "Gebze", "Gölcük", "İzmit", "Kandıra", "Karamürsel", "Kartepe", "Körfez"],
+            "Konya": ["Ahırlı", "Akören", "Akşehir", "Altınekin", "Beyşehir", "Bozkır", "Cihanbeyli", "Çeltik", "Çumra", "Derbent", "Derebucak", "Doğanhisar", "Emirgazi", "Ereğli", "Güneysınır", "Hadim", "Halkapınar", "Hüyük", "Ilgın", "Kadınhanı", "Karapınar", "Karatay", "Kulu", "Meram", "Sarayönü", "Selçuklu", "Seydişehir", "Taşkent", "Tuzlukçu", "Yalıhüyük", "Yunak"],
+            "Kütahya": ["Altıntaş", "Aslanapa", "Çavdarhisar", "Domaniç", "Dumlupınar", "Emet", "Gediz", "Hisarcık", "Merkez", "Pazarlar", "Şaphane", "Simav", "Tavşanlı"],
+            "Malatya": ["Akçadağ", "Arapgir", "Arguvan", "Battalgazi", "Darende", "Doğanşehir", "Doğanyol", "Hekimhan", "Kale", "Kuluncak", "Pütürge", "Yazıhan", "Yeşilyurt"],
+            "Manisa": ["Ahmetli", "Akhisar", "Alaşehir", "Demirci", "Gölmarmara", "Gördes", "Kırkağaç", "Köprübaşı", "Kula", "Salihli", "Sarıgöl", "Saruhanlı", "Selendi", "Soma", "Şehzadeler", "Turgutlu", "Yunusemre"],
+            "Kahramanmaraş": ["Afşin", "Andırın", "Çağlayancerit", "Dulkadiroğlu", "Ekinözü", "Elbistan", "Göksun", "Nurhak", "Onikişubat", "Pazarcık", "Türkoğlu"],
+            "Mardin": ["Artuklu", "Dargeçit", "Derik", "Kızıltepe", "Mazıdağı", "Midyat", "Nusaybin", "Ömerli", "Savur", "Yeşilli"],
+            "Muğla": ["Bodrum", "Dalaman", "Datça", "Fethiye", "Kavaklıdere", "Köyceğiz", "Marmaris", "Menteşe", "Milas", "Ortaca", "Seydikemer", "Ula", "Yatağan"],
+            "Muş": ["Bulanık", "Hasköy", "Korkut", "Malazgirt", "Merkez", "Varto"],
+            "Nevşehir": ["Acıgöl", "Avanos", "Derinkuyu", "Gülşehir", "Hacıbektaş", "Kozaklı", "Merkez", "Ürgüp"],
+            "Niğde": ["Altunhisar", "Bor", "Çamardı", "Çiftlik", "Merkez", "Ulukışla"],
+            "Ordu": ["Akkuş", "Altınordu", "Aybastı", "Çamaş", "Çatalpınar", "Çaybaşı", "Fatsa", "Gölköy", "Gülyalı", "Gürgentepe", "İkizce", "Kabadüz", "Kabataş", "Korgan", "Kumru", "Mesudiye", "Perşembe", "Ulubey", "Ünye"],
+            "Rize": ["Ardeşen", "Çamlıhemşin", "Çayeli", "Derepazarı", "Fındıklı", "Güneysu", "Hemşin", "İkizdere", "İyidere", "Kalkandere", "Merkez", "Pazar"],
+            "Sakarya": ["Adapazarı", "Akyazı", "Arifiye", "Erenler", "Ferizli", "Geyve", "Hendek", "Karapürçek", "Karasu", "Kaynarca", "Kocaali", "Pamukova", "Sapanca", "Serdivan", "Söğütlü", "Taraklı"],
+            "Samsun": ["19 Mayıs", "Alaçam", "Asarcık", "Atakum", "Ayvacık", "Bafra", "Canik", "Çarşamba", "Havza", "İlkadım", "Kavak", "Ladik", "Salıpazarı", "Tekkeköy", "Terme", "Vezirköprü", "Yakakent"],
+            "Siirt": ["Baykan", "Eruh", "Kurtalan", "Merkez", "Pervari", "Şirvan", "Tillo"],
+            "Sinop": ["Ayancık", "Boyabat", "Dikmen", "Durağan", "Erfelek", "Gerze", "Merkez", "Saraydüzü", "Türkeli"],
+            "Sivas": ["Akıncılar", "Altınyayla", "Divriği", "Doğanşar", "Gemerek", "Gölova", "Gürün", "Hafik", "İmranlı", "Kangal", "Koyulhisar", "Merkez", "Suşehri", "Şarkışla", "Ulaş", "Yıldızeli", "Zara"],
+            "Tekirdağ": ["Çerkezköy", "Çorlu", "Ergene", "Hayrabolu", "Kapaklı", "Malkara", "Marmaraereğlisi", "Muratlı", "Saray", "Süleymanpaşa", "Şarköy"],
+            "Tokat": ["Almus", "Artova", "Başçiftlik", "Erbaa", "Merkez", "Niksar", "Pazar", "Reşadiye", "Sulusaray", "Turhal", "Yeşilyurt", "Zile"],
+            "Trabzon": ["Akçaabat", "Araklı", "Arsin", "Beşikdüzü", "Çarşıbaşı", "Çaykara", "Dernekpazarı", "Düzköy", "Hayrat", "Köprübaşı", "Maçka", "Of", "Ortahisar", "Sürmene", "Şalpazarı", "Tonya", "Vakfıkebir", "Yomra"],
+            "Tunceli": ["Çemişgezek", "Hozat", "Mazgirt", "Merkez", "Nazımiye", "Ovacık", "Pertek", "Pülümür"],
+            "Şanlıurfa": ["Akçakale", "Birecik", "Bozova", "Ceylanpınar", "Eyyübiye", "Halfeti", "Haliliye", "Harran", "Hilvan", "Karaköprü", "Siverek", "Suruç", "Viranşehir"],
+            "Uşak": ["Banaz", "Eşme", "Karahallı", "Merkez", "Sivaslı", "Ulubey"],
+            "Van": ["Bahçesaray", "Başkale", "Çaldıran", "Çatak", "Edremit", "Erciş", "Gevaş", "Gürpınar", "İpekyolu", "Muradiye", "Özalp", "Saray", "Tuşba"],
+            "Yozgat": ["Akdağmadeni", "Aydıncık", "Boğazlıyan", "Çandır", "Çayıralan", "Çekerek", "Kadışehri", "Merkez", "Saraykent", "Sarıkaya", "Sorgun", "Şefaatli", "Yenifakılı", "Yerköy"],
+            "Zonguldak": ["Alaplı", "Çaycuma", "Devrek", "Ereğli", "Gökçebey", "Kilimli", "Kozlu", "Merkez"],
+            "Aksaray": ["Ağaçören", "Eskil", "Gülağaç", "Güzelyurt", "Merkez", "Ortaköy", "Sarıyahşi", "Sultanhanı"],
+            "Bayburt": ["Aydıntepe", "Demirözü", "Merkez"],
+            "Karaman": ["Ayrancı", "Başyayla", "Ermenek", "Kazımkarabekir", "Merkez", "Sarıveliler"],
+            "Kırıkkale": ["Bahşılı", "Balışeyh", "Çelebi", "Delice", "Karakeçili", "Keskin", "Merkez", "Sulakyurt", "Yahşihan"],
+            "Batman": ["Beşiri", "Gercüş", "Hasankeyf", "Kozluk", "Merkez", "Sason"],
+            "Şırnak": ["Beytüşşebap", "Cizre", "Güçlükonak", "İdil", "Merkez", "Silopi", "Uludere"],
+            "Bartın": ["Amasra", "Kurucaşile", "Merkez", "Ulus"],
+            "Ardahan": ["Çıldır", "Damal", "Göle", "Hanak", "Merkez", "Posof"],
+            "Iğdır": ["Aralık", "Karakoyunlu", "Merkez", "Tuzluca"],
+            "Yalova": ["Altınova", "Armutlu", "Çınarcık", "Çiftlikköy", "Merkez", "Termal"],
+            "Karabük": ["Eflani", "Eskipazar", "Merkez", "Ovacık", "Safranbolu", "Yenice"],
+            "Kilis": ["Elbeyli", "Merkez", "Musabeyli", "Polateli"],
+            "Osmaniye": ["Bahçe", "Düziçi", "Hasanbeyli", "Kadirli", "Merkez", "Sumbas", "Toprakkale"],
+            "Düzce": ["Akçakoca", "Cumayeri", "Çilimli", "Gölyaka", "Gümüşova", "Kaynaşlı", "Merkez", "Yığılca"]
+        };
+
+        function ilDoldur() {
+            const ilSecim = document.getElementById('ilSecim');
+            const iller = Object.keys(ilIlceVerisi).sort((a, b) => a.localeCompare(b, 'tr-TR'));
+
+            iller.forEach(il => {
+                const option = document.createElement('option');
+                option.value = il;
+                option.textContent = il;
+                ilSecim.appendChild(option);
+            });
+        }
+
+        function ilceDoldur() {
+            const ilSecim = document.getElementById('ilSecim');
+            const ilceSecim = document.getElementById('ilceSecim');
+            const secilenIl = ilSecim.value;
+
+            ilceSecim.innerHTML = '<option value="" disabled selected>İlçe Seçiniz</option>';
+
+            if (secilenIl && ilIlceVerisi[secilenIl]) {
+                const ilceler = ilIlceVerisi[secilenIl];
+                ilceler.forEach(ilce => {
+                    const option = document.createElement('option');
+                    option.value = ilce;
+                    option.textContent = ilce;
+                    ilceSecim.appendChild(option);
+                });
+            }
+        }
+
+        // 6. Stepper Yönetimi ve Animasyonlar
+        const cards = document.querySelectorAll('.card');
+        const stepWrappers = [
+            document.getElementById('stepWrapper1'),
+            document.getElementById('stepWrapper2'),
+            document.getElementById('stepWrapper3')
+        ];
+        const progressLine = document.getElementById('progressLine');
+
+        function updateStepper(activeStepIndex) {
+            const progress = (activeStepIndex / (stepWrappers.length - 1)) * 100;
+            progressLine.style.width = progress + '%';
+
+            stepWrappers.forEach((wrapper, index) => {
+                if (index < activeStepIndex) {
+                    wrapper.className = 'step-wrapper completed';
+                } else if (index === activeStepIndex) {
+                    wrapper.className = 'step-wrapper active';
+                } else {
+                    wrapper.className = 'step-wrapper';
+                }
+            });
+        }
+
+        function focusCard(cardId) {
+            document.getElementById(cardId).scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        // Scroll Observer (Ekranda Hangi Kart Varsa Stepper'ı Ona Göre Ayarlar)
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    if (entry.target.id === 'card1') updateStepper(0);
+                    if (entry.target.id === 'card2') updateStepper(1);
+                    if (entry.target.id === 'card3') updateStepper(2);
+                }
+            });
+        }, {
+            root: document.querySelector('.main-content'),
+            rootMargin: '0px 0px -40% 0px',
+            threshold: 0.1
+        });
+
+        cards.forEach(card => observer.observe(card));
+
+        // YENİ EKLENEN ÖZELLİKLER (DARK MODE, AUTOFILL, DRAG DROP, FORMAT PHONE, LOCALSTORAGE vb.)
+
+        // Dark Mode Toggle
+        function toggleTheme() {
+            const body = document.body;
+            if (body.parentElement.getAttribute('data-theme') === 'dark') {
+                body.parentElement.removeAttribute('data-theme');
+                localStorage.setItem('theme', 'light');
+            } else {
+                body.parentElement.setAttribute('data-theme', 'dark');
+                localStorage.setItem('theme', 'dark');
+            }
+        }
+        if (localStorage.getItem('theme') === 'dark') document.documentElement.setAttribute('data-theme', 'dark');
+
+        // Otomatik Doldurma (TC -> Ad Soyad)
+        function autoFillTC() {
+            const tc = document.getElementById('tcKimlik').value;
+            if (tc.length === 11) {
+                // Fake API simülasyonu
+                showToast('MERNİS Doğrulanıyor...', 'info');
+                setTimeout(() => {
+                    const fakeData = {
+                        '12345678901': { ad: 'Ahmet', soyad: 'Yılmaz' },
+                        '11111111111': { ad: 'Ayşe', soyad: 'Demir' },
+                        '22222222222': { ad: 'Mehmet', soyad: 'Kaya' },
+                        '33333333333': { ad: 'Fatma', soyad: 'Çelik' },
+                        '44444444444': { ad: 'Mustafa', soyad: 'Şahin' },
+                        '55555555555': { ad: 'Zeynep', soyad: 'Yıldız' },
+                        '66666666666': { ad: 'Ali', soyad: 'Öztürk' },
+                        '77777777777': { ad: 'Elif', soyad: 'Aydın' },
+                        '88888888888': { ad: 'Hasan', soyad: 'Özdemir' },
+                        '99999999999': { ad: 'Merve', soyad: 'Arslan' },
+                        '10101010101': { ad: 'Burak', soyad: 'Doğan' }
+                    };
+                    if (fakeData[tc]) {
+                        document.getElementById('ad').value = fakeData[tc].ad;
+                        document.getElementById('soyad').value = fakeData[tc].soyad;
+                        showToast('Bilgiler Otomatik Dolduruldu!', 'success');
+                    } else {
+                        // Boş bırak
+                        showToast('TC Kimlik Geçerli.', 'success');
+                    }
+                }, 800);
+            }
+        }
+
+        // Telefon Formatlama (05XX XXX XX XX)
+        function formatPhone(input) {
+            let val = input.value.replace(/\D/g, '');
+            if (val.length > 11) val = val.substring(0, 11);
+
+            let formatted = '';
+            if (val.length > 0) {
+                formatted = val.substring(0, 4);
+                if (val.length > 4) formatted += ' ' + val.substring(4, 7);
+                if (val.length > 7) formatted += ' ' + val.substring(7, 9);
+                if (val.length > 9) formatted += ' ' + val.substring(9, 11);
+            }
+            input.value = formatted;
+        }
+
+        // Sürükle Bırak (Drag & Drop) Profil Fotoğrafı
+        const dropZoneObj = document.getElementById('dropZone');
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            dropZoneObj.addEventListener(eventName, preventDefaults, false);
+        });
+        function preventDefaults(e) { e.preventDefault(); e.stopPropagation(); }
+
+        ['dragenter', 'dragover'].forEach(eventName => {
+            dropZoneObj.addEventListener(eventName, () => dropZoneObj.classList.add('dragover'), false);
+        });
+        ['dragleave', 'drop'].forEach(eventName => {
+            dropZoneObj.addEventListener(eventName, () => dropZoneObj.classList.remove('dragover'), false);
+        });
+
+        // Gelişmiş Renkli Bildirim Fonksiyonu
+        function showToast(message, type = 'success', title = 'Bildirim') {
+            const toast = document.getElementById("toast");
+            const icon = toast.querySelector('i');
+            
+            // Temizle
+            toast.classList.remove('success', 'warning', 'error');
+            toast.classList.add(type);
+            
+            // İkon belirle
+            if (type === 'success') icon.className = 'fas fa-check-circle';
+            else if (type === 'warning') icon.className = 'fas fa-exclamation-triangle';
+            else if (type === 'error') icon.className = 'fas fa-exclamation-circle';
+
+            // İçerik
+            toast.querySelector('.toast-content h4').innerText = title;
+            toast.querySelector('.toast-content p').innerText = message;
+            
+            toast.classList.add("show");
+            
+            if (window.toastTimer) clearTimeout(window.toastTimer);
+            window.toastTimer = setTimeout(() => {
+                toast.classList.remove("show");
+            }, 5000);
+        }
+
+        // Form Validasyon Hatalarını Yakala
+        document.addEventListener('DOMContentLoaded', () => {
+            const forms = document.querySelectorAll('form');
+            forms.forEach(form => {
+                form.addEventListener('invalid', (e) => {
+                    e.preventDefault();
+                    showToast('Lütfen tüm zorunlu alanları doğru şekilde doldurun.', 'warning', 'Eksik Bilgi!');
+                }, true);
+            });
+        });
+
+        dropZoneObj.addEventListener('drop', (e) => {
+            let dt = e.dataTransfer;
+            let files = dt.files;
+            if (files.length > 0) {
+                document.getElementById('imgInput').files = files; // input'a ata
+                const reader = new FileReader();
+                reader.onload = (ev) => { document.getElementById('preview').src = ev.target.result; };
+                reader.readAsDataURL(files[0]);
+                showToast('Fotoğraf Başarıyla Yüklendi', 'success');
+            }
+        });
+
+        // Gelişmiş Toast
+        function showToast(msg, type = 'success') {
+            const toast = document.getElementById("toast");
+            toast.innerHTML = `<div style="font-size: 1.2rem; margin-bottom: 5px;">${type === 'success' ? '🎉' : 'ℹ️'} Bildirim</div>
+                               <div style="font-size: 0.9rem; opacity: 0.9;">${msg}</div>`;
+            toast.style.borderLeftColor = type === 'success' ? 'var(--success)' : 'var(--primary)';
+            toast.className = "show";
+            setTimeout(() => { toast.className = toast.className.replace("show", ""); }, 3000);
+        }
+
+        // Form Submit -> PostgreSQL API
+        document.getElementById('fullProjectForm').onsubmit = async function (e) {
+            e.preventDefault();
+
+            const tcVal = document.getElementById('tcKimlik').value;
+            if (!tcVal) return;
+
+            // Form verilerini FormData ile topla (Dosya yükleme için)
+            const formData = new FormData();
+            
+            // Kişisel Bilgiler
+            formData.append('tc_no', tcVal);
+            formData.append('ad', document.getElementById('ad').value);
+            formData.append('soyad', document.getElementById('soyad').value);
+            formData.append('telefon', document.getElementById('telefon').value.replace(/\s/g, ''));
+            formData.append('dogum_tarihi', document.querySelector('input[type="date"]').value);
+            
+            // Cinsiyet ve Kan Grubu için doğru selectorları kullanalım
+            const selects = document.querySelectorAll('select');
+            formData.append('cinsiyet', selects[0].value);
+            formData.append('kan_grubu', selects[1].value);
+            formData.append('eposta', document.querySelector('input[type="email"]').value);
+            formData.append('ogrenim_durumu', selects[2].value);
+            formData.append('meslek', document.querySelector('input[placeholder="Kursiyerin Mesleği"]').value);
+            formData.append('il', document.getElementById('ilSecim').value);
+            formData.append('ilce', document.getElementById('ilceSecim').value);
+            formData.append('adres', document.querySelector('textarea').value);
+
+            // Eğitim Bilgileri
+            formData.append('ehliyet_sinifi', document.getElementById('ehliyetSinifi').value);
+            formData.append('vites_tercihi', selects[5].value);
+            
+            // Ödeme Bilgileri
+            formData.append('toplam_ucret', document.getElementById('kursUcreti').value || 0);
+            formData.append('odeme_turu', document.getElementById('anaOdemeTuru').value);
+            formData.append('odeme_sekli', document.getElementById('odemeSekli').value);
+            formData.append('taksit_sayisi', document.getElementById('taksitSayisi').value || 1);
+            formData.append('pesinat', document.getElementById('pesinat').value || 0);
+
+            // Dosyalar
+            const photoFile = document.getElementById('imgInput').files[0];
+            if (photoFile) formData.append('fotograf', photoFile);
+
+            const adliSicilFile = document.getElementById('file_adli_sicil').files[0];
+            if (adliSicilFile) formData.append('adli_sicil', adliSicilFile);
+
+            const diplomaFile = document.getElementById('file_diploma').files[0];
+            if (diplomaFile) formData.append('diploma', diplomaFile);
+
+            const kimlikFile = document.getElementById('file_kimlik').files[0];
+            if (kimlikFile) formData.append('kimlik', kimlikFile);
+
+            const saglikFile = document.getElementById('file_saglik_raporu').files[0];
+            if (saglikFile) formData.append('saglik_raporu', saglikFile);
+
+            try {
+                const response = await fetch('http://localhost:5000/api/students', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (response.ok) {
+                    showToast('Kursiyer ve Belgeleri Başarıyla Kaydedildi!', 'success');
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 2000);
+                } else {
+                    const errData = await response.json();
+                    showToast('Hata: ' + (errData.error || 'Kayıt yapılamadı'), 'error');
+                }
+            } catch (error) {
+                console.error('Submit Error:', error);
+                showToast('Bağlantı Hatası!', 'error');
+            }
+        };
+
+        // Global Role ve Tema Kontrolü
+        function checkAccess() {
+            const role = localStorage.getItem('userRole') || 'staff';
+            const theme = localStorage.getItem('theme') || 'light';
+
+            if (theme === 'dark') {
+                document.body.setAttribute('data-theme', 'dark');
+                document.documentElement.setAttribute('data-theme', 'dark');
+            }
+
+            const sidebar = document.querySelector('.sidebar');
+            if (!sidebar) return;
+
+            let links = '';
+            if (role === 'student') {
+                window.location.href = "profil.html";
+                return;
+            } else if (role === 'instructor') {
+                links = `
+                    <a href="egitmen.html" class="menu-item"><i class="fas fa-chalkboard-teacher"></i> Eğitmen Paneli</a>
+                    <a href="kursiyerlistesi.html" class="menu-item"><i class="fas fa-list-ul"></i> Öğrencilerim</a>
+                    <a href="profil.html" class="menu-item"><i class="fas fa-user-circle"></i> Profilim</a>
+                    <a href="giris.html" class="menu-item" onclick="localStorage.clear()"><i class="fas fa-sign-out-alt"></i> Çıkış Yap</a>
+                `;
+                window.location.href = "egitmen.html";
+                return;
+            } else {
+                links = `
+                    <a href="kursiyerkayit.html" class="menu-item active"><i class="fas fa-user-plus"></i> Kursiyer Kayıt</a>
+                    <a href="kursiyerlistesi.html" class="menu-item"><i class="fas fa-list-ul"></i> Kursiyer Listesi</a>
+                    <a href="egitmen.html" class="menu-item"><i class="fas fa-chalkboard-teacher"></i> Eğitmen Yönetimi</a>
+                    <a href="profil.html" class="menu-item"><i class="fas fa-user-circle"></i> Profilim</a>
+                    <a href="muhasebe.html" class="menu-item"><i class="fas fa-credit-card"></i> Muhasebe</a>
+                    <a href="istatistikler.html" class="menu-item"><i class="fas fa-chart-line"></i> İstatistikler</a>
+                    <a href="sistemayarlari.html" class="menu-item"><i class="fas fa-cog"></i> Sistem Ayarları</a>
+                    <a href="giris.html" class="menu-item" onclick="localStorage.clear()"><i class="fas fa-sign-out-alt"></i> Çıkış Yap</a>
+                `;
+            }
+
+            const currentLinks = sidebar.querySelectorAll('.menu-item');
+            currentLinks.forEach(l => l.remove());
+            sidebar.innerHTML += links;
+        }
+
+        // İlk Yüklemede LocalStorage İstatistikleri
+        document.addEventListener('DOMContentLoaded', () => {
+            checkAccess();
+            let kayitlar = JSON.parse(localStorage.getItem('kursiyerler')) || [];
+            if (kayitlar.length > 0) {
+                let totalEl = document.getElementById('stat-total');
+                totalEl.innerText = 142 + kayitlar.length;
+                let activeEl = document.getElementById('stat-active');
+                activeEl.innerText = 89 + kayitlar.length;
+            }
+        });
+
+        // Arama (Autocomplete simülasyonu)
+        function searchKursiyer() {
+            const val = document.getElementById('searchInput').value.toLowerCase();
+            if (val.length > 2) {
+                // UI üzerinde arama yapıyormuş hissi ver
+                document.getElementById('searchInput').style.borderColor = 'var(--primary)';
+            } else {
+                document.getElementById('searchInput').style.borderColor = '#e0e0e0';
+            }
+        }
+        function previewImage(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    document.getElementById('preview').src = e.target.result;
+                };
+                reader.readAsDataURL(input.files[0]);
+                showToast('Fotoğraf Seçildi', 'info');
+            }
+        }
+    </script>
+</body>
+
+</html>

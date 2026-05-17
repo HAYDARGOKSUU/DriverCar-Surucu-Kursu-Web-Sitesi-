@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sürüşlerim | DRİVERCAR</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #1e3c72;
+            --secondary: #2a5298;
+            --success: #27ae60;
+            --warning: #f39c12;
+            --danger: #e74c3c;
+            --bg: #f4f7fe;
+            --white: #ffffff;
+            --text-dark: #1e293b;
+            --text-light: #64748b;
+            --shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            --glass: rgba(255, 255, 255, 0.95);
+        }
+
+        [data-theme="dark"] {
+            --bg: #020617;
+            --white: #1e293b;
+            --primary: #3b82f6;
+            --text-dark: #f8fafc;
+            --text-light: #94a3b8;
+            --glass: rgba(30, 41, 59, 0.95);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            display: flex;
+            min-height: 100vh;
+            color: var(--text-dark);
+            transition: all 0.4s ease;
+        }
+
+        [data-theme="dark"] body {
+            background: linear-gradient(135deg, #020617 0%, #1e1b4b 50%, #020617 100%);
+        }
+
+        .sidebar {
+            width: 280px;
+            background: rgba(30, 60, 114, 0.95);
+            backdrop-filter: blur(15px);
+            color: white;
+            padding: 30px 20px;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 10px 0 30px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            height: 100vh;
+        }
+
+        .logo-area {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .logo-area i {
+            font-size: 3.5rem;
+            margin-bottom: 15px;
+            filter: drop-shadow(0 5px 15px rgba(0,0,0,0.3));
+        }
+
+        .menu-item {
+            padding: 16px 20px;
+            margin-bottom: 8px;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: 0.4s;
+            display: flex;
+            align-items: center;
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .menu-item i {
+            margin-right: 15px;
+            font-size: 1.3rem;
+            width: 30px;
+            text-align: center;
+        }
+
+        .menu-item:hover,
+        .menu-item.active {
+            background: rgba(255, 255, 255, 0.15);
+            color: white;
+            transform: translateX(8px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(5px);
+        }
+
+        .page-header {
+            margin-bottom: 30px;
+        }
+
+        .page-header h1 {
+            font-size: 2rem;
+            color: var(--primary);
+            font-weight: 700;
+        }
+
+        .lesson-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 25px;
+        }
+
+        .lesson-card {
+            background: var(--glass);
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            position: relative;
+            overflow: hidden;
+            transition: 0.3s;
+        }
+
+        .lesson-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .lesson-status {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            padding: 6px 12px;
+            border-radius: 10px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .status-past { background: rgba(100, 116, 139, 0.1); color: #64748b; }
+        .status-future { background: rgba(39, 174, 96, 0.1); color: var(--success); }
+
+        .lesson-date {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .lesson-info {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .info-item {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+        }
+
+        .info-label { color: var(--text-light); }
+        .info-value { font-weight: 600; }
+
+        .instructor-area {
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px solid rgba(0,0,0,0.05);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .instructor-img {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .instructor-name {
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .instructor-title {
+            font-size: 0.75rem;
+            color: var(--text-light);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="sidebar">
+        <div class="logo-area" style="flex-direction: column; justify-content: center; padding-left: 0; gap: 10px; text-align: center;">
+            <img src="resim1.png" alt="Logo" style="width: 100px; height: auto; background: rgba(255, 255, 255, 0.95); padding: 8px 12px; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.2);">
+            <h2>DRİVERCAR</h2>
+        </div>
+        <div id="sidebar-links">
+            <a href="profil.html" class="menu-item"><i class="fas fa-user-circle"></i> Profilim</a>
+            <a href="suruslerim.html" class="menu-item active"><i class="fas fa-steering-wheel"></i> Sürüşlerim</a>
+            <a href="giris.html" class="menu-item" onclick="localStorage.clear()"><i class="fas fa-sign-out-alt"></i> Çıkış Yap</a>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="page-header">
+            <h1>Sürüş Derslerim</h1>
+            <p>Geçmiş ve gelecek direksiyon derslerinizin takibi</p>
+        </div>
+
+        <div class="lesson-grid" id="lessonGrid">
+            <!-- Dinamik Olarak Dolacak -->
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const theme = localStorage.getItem('theme') || 'light';
+            if (theme === 'dark') document.body.setAttribute('data-theme', 'dark');
+
+            loadLessons();
+        });
+
+        function loadLessons() {
+            const currentUser = JSON.parse(localStorage.getItem('currentUser')) || { tc: "12345678901" };
+            const lessons = [
+                { date: "15 Mayıs 2026", time: "10:00", type: "Gece Sürüşü Pratiği", instructor: "Kemal Demir", status: "Gelecek" },
+                { date: "12 Mayıs 2026", time: "16:00", type: "Otoyol Sürüşü", instructor: "Ayşe Yıldız", status: "Gelecek" },
+                { date: "08 Mayıs 2026", time: "14:30", type: "Paralel Park", instructor: "Mehmet Özcan", status: "Gelecek" },
+                { date: "04 Mayıs 2026", time: "09:00", type: "L Park ve Rampa", instructor: "Mehmet Özcan", status: "Geçmiş" },
+                { date: "30 Nisan 2026", time: "10:00", type: "Şehir İçi Sürüş", instructor: "Mehmet Özcan", status: "Geçmiş" },
+                { date: "25 Nisan 2026", time: "09:00", type: "Yokuş Kalkış", instructor: "Ayşe Yıldız", status: "Geçmiş" },
+                { date: "20 Nisan 2026", time: "11:00", type: "Temel Kontroller", instructor: "Ayşe Yıldız", status: "Geçmiş" }
+            ];
+
+            const grid = document.getElementById('lessonGrid');
+            grid.innerHTML = '';
+
+            lessons.forEach(l => {
+                const statusClass = l.status === 'Gelecek' ? 'status-future' : 'status-past';
+                const card = `
+                    <div class="lesson-card">
+                        <div class="lesson-status ${statusClass}">${l.status}</div>
+                        <div class="lesson-date"><i class="fas fa-calendar-day"></i> ${l.date}</div>
+                        <div class="lesson-info">
+                            <div class="info-item"><span class="info-label">Saat</span><span class="info-value">${l.time}</span></div>
+                            <div class="info-item"><span class="info-label">Ders Tipi</span><span class="info-value">${l.type}</span></div>
+                        </div>
+                        <div class="instructor-area">
+                            <img src="https://i.pravatar.cc/150?u=${l.instructor}" class="instructor-img">
+                            <div>
+                                <div class="instructor-name">${l.instructor}</div>
+                                <div class="instructor-title">Usta Öğretici</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                grid.insertAdjacentHTML('beforeend', card);
+            });
+        }
+    </script>
+</body>
+</html>

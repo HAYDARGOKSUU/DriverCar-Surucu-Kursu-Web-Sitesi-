@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistem Ayarları | DRİVERCAR</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #1e3c72;
+            --secondary: #2a5298;
+            --success: #27ae60;
+            --warning: #f39c12;
+            --danger: #e74c3c;
+            --info: #3498db;
+            --bg: #f4f7fe;
+            --white: #ffffff;
+            --text-dark: #2b3674;
+            --text-light: #a3aed1;
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+        }
+
+        [data-theme="dark"] {
+            --bg: #121212;
+            --white: #1e1e1e;
+            --primary: #4e82e8;
+            --text-dark: #f5f6fa;
+            --text-light: #dcdde1;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg);
+            display: flex;
+            height: 100vh;
+            color: var(--text-dark);
+            transition: background 0.3s;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 260px;
+            background: linear-gradient(180deg, var(--primary) 0%, var(--secondary) 100%);
+            padding: 30px 20px;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 4px 0 15px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            height: 100vh;
+        }
+
+        .logo-area { color: white; text-align: center; margin-bottom: 40px; }
+        .logo-area i { font-size: 2.5rem; margin-bottom: 10px; }
+
+        .menu-item {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            padding: 15px 20px;
+            margin-bottom: 5px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-weight: 500;
+            transition: 0.3s;
+        }
+
+        .menu-item:hover, .menu-item.active {
+            background: rgba(255, 255, 255, 0.15);
+            color: white;
+            transform: translateX(5px);
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            padding: 40px;
+            overflow-y: auto;
+        }
+
+        .page-header { margin-bottom: 30px; }
+        .page-header h1 { font-size: 1.8rem; font-weight: 700; }
+        .page-header p { color: var(--text-light); font-size: 0.9rem; }
+
+        /* Settings Sections */
+        .settings-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+
+        .settings-card {
+            background: var(--white);
+            border-radius: 25px;
+            padding: 30px;
+            box-shadow: var(--shadow);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #f0f2f5;
+        }
+
+        .card-header i { font-size: 1.5rem; color: var(--primary); }
+        .card-header h2 { font-size: 1.1rem; font-weight: 600; }
+
+        .setting-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid #f8fafc;
+        }
+
+        .setting-row:last-child { border-bottom: none; }
+
+        .setting-info h4 { font-size: 0.95rem; font-weight: 600; margin-bottom: 4px; }
+        .setting-info p { font-size: 0.8rem; color: var(--text-light); }
+
+        /* Switch UI */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 26px;
+        }
+
+        .switch input { opacity: 0; width: 0; height: 0; }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: #cbd5e1;
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px; width: 18px;
+            left: 4px; bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider { background-color: var(--success); }
+        input:checked + .slider:before { transform: translateX(24px); }
+
+        .btn-save {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .btn-save:hover { background: var(--secondary); transform: translateY(-2px); }
+
+        /* Form Inputs */
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 8px; }
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #f0f2f5;
+            border-radius: 12px;
+            outline: none;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="sidebar">
+        <div class="logo-area" style="flex-direction: column; justify-content: center; padding-left: 0; gap: 10px; text-align: center;">
+            <img src="resim1.png" alt="Logo" style="width: 100px; height: auto; background: rgba(255, 255, 255, 0.95); padding: 8px 12px; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.2);">
+            <h2>DRİVERCAR</h2>
+        </div>
+        <div id="sidebar-links"></div>
+    </div>
+
+    <div class="main-content">
+        <div class="page-header">
+            <h1>Sistem Ayarları</h1>
+            <p>Platformun genel konfigürasyonu ve özelleştirilmesi</p>
+        </div>
+
+        <div class="settings-grid">
+            <!-- Genel Görünüm -->
+            <div class="settings-card">
+                <div class="card-header">
+                    <i class="fas fa-palette"></i>
+                    <h2>Görünüm Ayarları</h2>
+                </div>
+                <div class="setting-row">
+                    <div class="setting-info">
+                        <h4>Koyu Mod (Dark Mode)</h4>
+                        <p>Tüm platform genelinde koyu renk temasını aktif et</p>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" id="darkModeToggle" onchange="updateTheme(this)">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div class="setting-row">
+                    <div class="setting-info">
+                        <h4>Kompakt Menü</h4>
+                        <p>Yan menüyü sadece ikonlar görünecek şekilde daralt</p>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div class="form-group" style="margin-top: 20px;">
+                    <label>Sistem Ana Rengi</label>
+                    <select>
+                        <option value="blue">Okyanus Mavisi (Varsayılan)</option>
+                        <option value="purple">Modern Mor</option>
+                        <option value="green">Doğa Yeşili</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Kurs Bilgileri -->
+            <div class="settings-card">
+                <div class="card-header">
+                    <i class="fas fa-building"></i>
+                    <h2>Kurum Bilgileri</h2>
+                </div>
+                <div class="form-group">
+                    <label>Sürücü Kursu Adı</label>
+                    <input type="text" value="DRİVERCAR Sürücü Kursu">
+                </div>
+                <div class="form-group">
+                    <label>İletişim E-Posta</label>
+                    <input type="email" value="info@drivercar.com">
+                </div>
+                <div class="form-group">
+                    <label>WhatsApp Destek Numarası</label>
+                    <input type="tel" value="+90 500 000 00 00">
+                </div>
+                <button class="btn-save" onclick="saveSettings()">
+                    <i class="fas fa-save"></i> Değişiklikleri Kaydet
+                </button>
+            </div>
+
+            <!-- Güvenlik & Otomasyon -->
+            <div class="settings-card">
+                <div class="card-header">
+                    <i class="fas fa-shield-halved"></i>
+                    <h2>Güvenlik & Otomasyon</h2>
+                </div>
+                <div class="setting-row">
+                    <div class="setting-info">
+                        <h4>İki Faktörlü Doğrulama</h4>
+                        <p>Girişlerde e-posta onay kodu iste</p>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" checked>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div class="setting-row">
+                    <div class="setting-info">
+                        <h4>Otomatik Borç Hatırlatıcı</h4>
+                        <p>Ödemesi yaklaşanlara otomatik SMS/E-posta gönder</p>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" checked>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Yedekleme -->
+            <div class="settings-card">
+                <div class="card-header">
+                    <i class="fas fa-database"></i>
+                    <h2>Veri Yönetimi</h2>
+                </div>
+                <div class="setting-row">
+                    <div class="setting-info">
+                        <h4>Otomatik Yedekleme</h4>
+                        <p>Verileri haftalık olarak buluta yedekle</p>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" checked>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div style="display: flex; gap: 10px; margin-top: 20px;">
+                    <button class="btn-save" style="background: var(--info); margin-top: 0;">
+                        <i class="fas fa-download"></i> Veri İndir
+                    </button>
+                    <button class="btn-save" style="background: var(--danger); margin-top: 0;" onclick="clearSystem()">
+                        <i class="fas fa-trash-can"></i> Sistemi Sıfırla
+                    </button>
+                </div>
+            </div>
+
+            <!-- Kullanıcı Yönetimi (Sadece Admin Görür) -->
+            <div class="settings-card" id="userManagementCard" style="grid-column: span 2; display: none;">
+                <div class="card-header">
+                    <i class="fas fa-user-shield"></i>
+                    <h2>Kullanıcı Yetkilendirme (RBAC)</h2>
+                </div>
+                <div class="table-container" style="overflow-x: auto;">
+                    <table style="width: 100%; border-collapse: collapse;">
+                        <thead>
+                            <tr style="text-align: left; border-bottom: 2px solid #f0f2f5;">
+                                <th style="padding: 10px;">Kullanıcı Adı</th>
+                                <th style="padding: 10px;">Rol</th>
+                                <th style="padding: 10px;">Veri Silme Yetkisi</th>
+                                <th style="padding: 10px;">İşlemler</th>
+                            </tr>
+                        </thead>
+                        <tbody id="userListTable">
+                            <!-- JS ile doldurulacak -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div id="toast" style="visibility: hidden; min-width: 250px; margin-left: -125px; background-color: #333; color: #fff; text-align: center; border-radius: 2px; padding: 16px; position: fixed; z-index: 3000; left: 50%; bottom: 30px; font-size: 17px;"></div>
+        </div>
+        </div>
+    </div>
+
+    <script>
+        function showToast(msg) {
+            const toast = document.getElementById("toast");
+            toast.innerText = msg;
+            toast.style.visibility = "visible";
+            setTimeout(() => { toast.style.visibility = "hidden"; }, 3000);
+        }
+
+        function checkAccess() {
+            const role = localStorage.getItem('userRole') || 'staff';
+            const theme = localStorage.getItem('theme') || 'light';
+            
+            if (theme === 'dark') {
+                document.body.setAttribute('data-theme', 'dark');
+                const toggle = document.getElementById('darkModeToggle');
+                if(toggle) toggle.checked = true;
+            }
+
+            const sidebar = document.getElementById('sidebar-links');
+            if (role !== 'staff' && role !== 'admin') {
+                window.location.href = "profil.html";
+                return;
+            }
+
+            sidebar.innerHTML = `
+                <a href="kursiyerkayit.html" class="menu-item"><i class="fas fa-user-plus"></i> Kursiyer Kayıt</a>
+                <a href="kursiyerlistesi.html" class="menu-item"><i class="fas fa-list-ul"></i> Kursiyer Listesi</a>
+                <a href="suruspratikleri.html" class="menu-item"><i class="fas fa-steering-wheel"></i> Sürüş Pratikleri</a>
+                <a href="araclar.html" class="menu-item"><i class="fas fa-car"></i> Araç Filosu</a>
+                <a href="egitmen.html" class="menu-item"><i class="fas fa-chalkboard-teacher"></i> Eğitmen Yönetimi</a>
+                <a href="muhasebe.html" class="menu-item"><i class="fas fa-credit-card"></i> Muhasebe</a>
+                <a href="istatistikler.html" class="menu-item"><i class="fas fa-chart-line"></i> İstatistikler</a>
+                <a href="sistemayarlari.html" class="menu-item active"><i class="fas fa-cog"></i> Sistem Ayarları</a>
+                <a href="giris.html" class="menu-item" onclick="localStorage.clear()"><i class="fas fa-sign-out-alt"></i> Çıkış Yap</a>
+            `;
+
+            // Ayarları yükle
+            const config = JSON.parse(localStorage.getItem('systemConfig')) || {};
+            const inputs = document.querySelectorAll('.settings-card:nth-of-type(2) input');
+            if(config.schoolName) inputs[0].value = config.schoolName;
+            if(config.email) inputs[1].value = config.email;
+            if(config.whatsapp) inputs[2].value = config.whatsapp;
+        }
+
+        function updateTheme(cb) {
+            const theme = cb.checked ? 'dark' : 'light';
+            localStorage.setItem('theme', theme);
+            document.body.setAttribute('data-theme', theme);
+            showToast("Tema güncellendi!");
+        }
+
+        function saveSettings() {
+            const inputs = document.querySelectorAll('.settings-card:nth-of-type(2) input');
+            const config = {
+                schoolName: inputs[0].value,
+                email: inputs[1].value,
+                whatsapp: inputs[2].value
+            };
+            localStorage.setItem('systemConfig', JSON.stringify(config));
+            showToast("Ayarlar başarıyla kaydedildi!");
+        }
+
+        function downloadData() {
+            const data = {};
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                data[key] = localStorage.getItem(key);
+            }
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `drivercar_yedek_${new Date().toISOString().slice(0,10)}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            showToast("Veriler indiriliyor...");
+        }
+
+        function clearSystem() {
+            if(confirm("Tüm veriler silinecek! Emin misiniz?")) {
+                localStorage.clear();
+                window.location.href = "giris.html";
+            }
+        }
+
+        async function loadUsers() {
+            try {
+                const response = await fetch('http://localhost:5000/api/users');
+                const users = await response.json();
+                const tbody = document.getElementById('userListTable');
+                tbody.innerHTML = '';
+
+                users.forEach(u => {
+                    const tr = document.createElement('tr');
+                    const canDelete = u.yetkiler?.can_delete !== false;
+                    
+                    tr.innerHTML = `
+                        <td style="padding: 10px;">${u.kullanici_adi}</td>
+                        <td style="padding: 10px;">${u.rol.toUpperCase()}</td>
+                        <td style="padding: 10px;">
+                            <label class="switch">
+                                <input type="checkbox" ${canDelete ? 'checked' : ''} onchange="updateUserPermission(${u.id}, 'can_delete', this.checked)">
+                                <span class="slider"></span>
+                            </label>
+                        </td>
+                        <td style="padding: 10px;">
+                            <button onclick="deleteUser(${u.id}, '${u.kullanici_adi}')" style="color: var(--danger); background: none; border: none; cursor: pointer;"><i class="fas fa-trash"></i></button>
+                        </td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            } catch (error) {
+                console.error('Kullanıcılar yüklenemedi:', error);
+            }
+        }
+
+        async function updateUserPermission(userId, permission, value) {
+            try {
+                const response = await fetch(`http://localhost:5000/api/users/${userId}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ yetkiler: { [permission]: value } })
+                });
+                if (response.ok) {
+                    showToast("Yetki başarıyla güncellendi!");
+                }
+            } catch (error) {
+                console.error('Yetki güncelleme hatası:', error);
+            }
+        }
+
+        async function deleteUser(userId, username) {
+            if (!confirm(`${username} adlı kullanıcıyı silmek istediğinize emin misiniz?`)) return;
+            try {
+                const response = await fetch(`http://localhost:5000/api/users/${userId}`, { method: 'DELETE' });
+                if (response.ok) {
+                    showToast("Kullanıcı silindi.");
+                    loadUsers();
+                }
+            } catch (error) {
+                console.error('Kullanıcı silme hatası:', error);
+            }
+        }
+
+        document.querySelector('.btn-save[style*="info"]').onclick = downloadData;
+        document.addEventListener('DOMContentLoaded', () => {
+            checkAccess();
+            const role = localStorage.getItem('userRole');
+            if (role === 'admin') {
+                document.getElementById('userManagementCard').style.display = 'block';
+                loadUsers();
+            }
+        });
+    </script>
+</body>
+
+</html>

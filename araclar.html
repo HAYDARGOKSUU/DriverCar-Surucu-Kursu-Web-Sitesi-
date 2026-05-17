@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Araç Filosu Yönetimi | DRİVERCAR</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #1e3c72;
+            --secondary: #2a5298;
+            --success: #27ae60;
+            --warning: #f39c12;
+            --danger: #e74c3c;
+            --info: #3498db;
+            --bg: #f4f7fe;
+            --white: #ffffff;
+            --text-dark: #2b3674;
+            --text-light: #a3aed1;
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+        }
+
+        [data-theme="dark"] {
+            --bg: #121212;
+            --white: #1e1e1e;
+            --primary: #4e82e8;
+            --text-dark: #f5f6fa;
+            --text-light: #dcdde1;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg);
+            display: flex;
+            height: 100vh;
+            color: var(--text-dark);
+            overflow: hidden;
+        }
+
+        .sidebar {
+            width: 260px;
+            background: linear-gradient(180deg, var(--primary) 0%, var(--secondary) 100%);
+            padding: 30px 20px;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 4px 0 15px rgba(0, 0, 0, 0.1);
+            flex-shrink: 0;
+        }
+
+        .logo-area { color: white; text-align: center; margin-bottom: 40px; }
+        .logo-area i { font-size: 2.5rem; margin-bottom: 10px; }
+
+        .menu-item {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            padding: 15px 20px;
+            margin-bottom: 5px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center; gap: 15px;
+            font-weight: 500; transition: 0.3s;
+        }
+
+        .menu-item:hover, .menu-item.active {
+            background: rgba(255, 255, 255, 0.15);
+            color: white; transform: translateX(5px);
+        }
+
+        .main-content { flex: 1; padding: 40px; overflow-y: auto; }
+        .page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+        .page-header h1 { font-size: 1.8rem; font-weight: 700; }
+
+        .vehicle-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+        }
+
+        .vehicle-card {
+            background: var(--white);
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: var(--shadow);
+            transition: 0.3s;
+            border: 1px solid rgba(0,0,0,0.02);
+            position: relative;
+        }
+
+        .vehicle-card:hover { transform: translateY(-5px); }
+
+        .vehicle-badge {
+            position: absolute;
+            top: 20px; right: 20px;
+            padding: 5px 12px;
+            border-radius: 10px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .badge-active { background: rgba(39, 174, 96, 0.1); color: var(--success); }
+        .badge-maint { background: rgba(231, 76, 60, 0.1); color: var(--danger); }
+
+        .vehicle-plate {
+            font-size: 1.2rem;
+            font-weight: 700;
+            background: #f1f5f9;
+            padding: 5px 15px;
+            border-radius: 8px;
+            display: inline-block;
+            margin-bottom: 15px;
+            border: 2px solid #cbd5e1;
+            color: #334155;
+        }
+
+        .vehicle-info h3 { font-size: 1.1rem; margin-bottom: 10px; }
+        
+        .info-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 0.85rem;
+        }
+
+        .info-label { color: var(--text-light); }
+        .info-value { font-weight: 600; }
+
+        .maint-progress {
+            margin-top: 15px;
+            background: #f1f5f9;
+            height: 8px;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .maint-bar { height: 100%; background: var(--primary); border-radius: 4px; }
+
+        .btn-action {
+            width: 100%;
+            margin-top: 20px;
+            padding: 10px;
+            border-radius: 10px;
+            border: 1px solid #e2e8f0;
+            background: var(--white);
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+            display: flex; justify-content: center; align-items: center; gap: 8px;
+        }
+
+        .btn-action:hover { background: var(--primary); color: white; }
+
+        /* Modal etc. */
+        .btn-floating {
+            position: fixed;
+            bottom: 30px;
+            right: 110px;
+            width: 60px;
+            height: 60px;
+            background: var(--primary);
+            color: white;
+            border-radius: 50%;
+            display: flex; justify-content: center; align-items: center;
+            font-size: 1.5rem;
+            box-shadow: 0 10px 25px rgba(30, 60, 114, 0.3);
+            cursor: pointer; transition: 0.3s;
+            border: none;
+        }
+
+        .btn-floating:hover { transform: scale(1.1); background: var(--secondary); }
+    </style>
+</head>
+
+<body>
+    <div class="sidebar">
+        <div class="logo-area" style="flex-direction: column; justify-content: center; padding-left: 0; gap: 10px; text-align: center;">
+            <img src="resim1.png" alt="Logo" style="width: 100px; height: auto; background: rgba(255, 255, 255, 0.95); padding: 8px 12px; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.2);">
+            <h2>DRİVERCAR</h2>
+        </div>
+        <div id="sidebar-links"></div>
+    </div>
+
+    <div class="main-content">
+        <div class="page-header">
+            <h1>Araç Filosu & Envanter</h1>
+            <div style="display:flex; gap:10px;">
+                <button onclick="toggleTheme()" class="btn-action" style="width:auto; margin-top:0;"><i class="fas fa-moon"></i></button>
+            </div>
+        </div>
+
+        <div class="vehicle-grid">
+            <!-- Araç 1 -->
+            <div class="vehicle-card">
+                <div class="vehicle-badge badge-active">Aktif</div>
+                <div class="vehicle-plate">06 ABC 123</div>
+                <div class="vehicle-info">
+                    <h3>Volkswagen Golf 2023</h3>
+                    <div class="info-item">
+                        <span class="info-label">Vites</span>
+                        <span class="info-value">Manuel</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Ehliyet Sınıfı</span>
+                        <span class="info-value">B Sınıfı</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Km</span>
+                        <span class="info-value">12.450 km</span>
+                    </div>
+                    <div class="info-item" style="margin-top:10px;">
+                        <span class="info-label">Bakıma Kalan</span>
+                        <span class="info-value">2.550 km</span>
+                    </div>
+                    <div class="maint-progress"><div class="maint-bar" style="width: 80%;"></div></div>
+                </div>
+                <button class="btn-action"><i class="fas fa-tools"></i> Bakım Kaydı Ekle</button>
+            </div>
+
+            <!-- Araç 2 -->
+            <div class="vehicle-card">
+                <div class="vehicle-badge badge-active">Aktif</div>
+                <div class="vehicle-plate">34 XYZ 789</div>
+                <div class="vehicle-info">
+                    <h3>Hyundai i20 2024</h3>
+                    <div class="info-item">
+                        <span class="info-label">Vites</span>
+                        <span class="info-value">Otomatik</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Ehliyet Sınıfı</span>
+                        <span class="info-value">B Sınıfı</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Km</span>
+                        <span class="info-value">3.100 km</span>
+                    </div>
+                    <div class="info-item" style="margin-top:10px;">
+                        <span class="info-label">Bakıma Kalan</span>
+                        <span class="info-value">11.900 km</span>
+                    </div>
+                    <div class="maint-progress"><div class="maint-bar" style="width: 20%;"></div></div>
+                </div>
+                <button class="btn-action"><i class="fas fa-tools"></i> Bakım Kaydı Ekle</button>
+            </div>
+
+            <!-- Araç 3 -->
+            <div class="vehicle-card">
+                <div class="vehicle-badge badge-maint">Bakımda</div>
+                <div class="vehicle-plate">07 ANT 07</div>
+                <div class="vehicle-info">
+                    <h3>Mercedes-Benz Axor</h3>
+                    <div class="info-item">
+                        <span class="info-label">Tip</span>
+                        <span class="info-value">Kamyon / Çekici</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Ehliyet Sınıfı</span>
+                        <span class="info-value">C/CE Sınıfı</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Km</span>
+                        <span class="info-value">145.000 km</span>
+                    </div>
+                    <div class="info-item" style="margin-top:10px;">
+                        <span class="info-label">Durum</span>
+                        <span class="info-value" style="color:var(--danger);">Ağır Bakım</span>
+                    </div>
+                    <div class="maint-progress"><div class="maint-bar" style="width: 95%; background: var(--danger);"></div></div>
+                </div>
+                <button class="btn-action"><i class="fas fa-check"></i> Bakımı Tamamla</button>
+            </div>
+        </div>
+
+        <button class="btn-floating" title="Yeni Araç Ekle"><i class="fas fa-plus"></i></button>
+    </div>
+
+    <!-- Yeni Araç Ekle Modalı -->
+    <div id="vehicleModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:2000; justify-content:center; align-items:center;">
+        <div class="card" style="width:400px; max-width:90%;">
+            <h2 style="margin-bottom:20px;">Yeni Araç Ekle</h2>
+            <form id="newVehicleForm">
+                <div class="info-item" style="flex-direction:column; align-items:flex-start; margin-bottom:15px;">
+                    <label style="font-size:0.8rem; margin-bottom:5px;">Plaka</label>
+                    <input type="text" id="vPlate" placeholder="06 ABC 123" required style="width:100%; padding:10px; border-radius:8px; border:1px solid #ddd;">
+                </div>
+                <div class="info-item" style="flex-direction:column; align-items:flex-start; margin-bottom:15px;">
+                    <label style="font-size:0.8rem; margin-bottom:5px;">Marka Model</label>
+                    <input type="text" id="vModel" placeholder="VW Golf 2023" required style="width:100%; padding:10px; border-radius:8px; border:1px solid #ddd;">
+                </div>
+                <div class="info-item" style="flex-direction:column; align-items:flex-start; margin-bottom:15px;">
+                    <label style="font-size:0.8rem; margin-bottom:5px;">Vites</label>
+                    <select id="vGear" style="width:100%; padding:10px; border-radius:8px; border:1px solid #ddd;">
+                        <option>Manuel</option>
+                        <option>Otomatik</option>
+                    </select>
+                </div>
+                <div class="info-item" style="flex-direction:column; align-items:flex-start; margin-bottom:15px;">
+                    <label style="font-size:0.8rem; margin-bottom:5px;">Km</label>
+                    <input type="number" id="vKm" placeholder="10000" required style="width:100%; padding:10px; border-radius:8px; border:1px solid #ddd;">
+                </div>
+                <div style="display:flex; gap:10px; margin-top:20px;">
+                    <button type="button" onclick="closeVehicleModal()" class="btn-action" style="margin-top:0;">İptal</button>
+                    <button type="submit" class="btn-action" style="margin-top:0; background:var(--primary); color:white;">Kaydet</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        let vehicles = [];
+
+        function toggleTheme() {
+            const body = document.body;
+            const isDark = body.getAttribute('data-theme') === 'dark';
+            const newTheme = isDark ? 'light' : 'dark';
+            body.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+        }
+
+        async function loadVehicles() {
+            try {
+                const response = await fetch('/api/vehicles');
+                vehicles = await response.json();
+                renderVehicles();
+            } catch (err) {
+                console.error('Araçlar yüklenemedi:', err);
+            }
+        }
+
+        function renderVehicles() {
+            const grid = document.querySelector('.vehicle-grid');
+            grid.innerHTML = '';
+            vehicles.forEach((v, index) => {
+                const progress = Math.min(100, Math.max(0, (v.bakima_kalan_km / 15000) * 100));
+                const badgeClass = v.durum === 'Aktif' ? 'badge-active' : 'badge-maint';
+                
+                const card = `
+                    <div class="vehicle-card">
+                        <div class="vehicle-badge ${badgeClass}">${v.durum}</div>
+                        <div class="vehicle-plate">${v.plaka}</div>
+                        <div class="vehicle-info">
+                            <h3>${v.marka_model}</h3>
+                            <div class="info-item">
+                                <span class="info-label">Vites</span>
+                                <span class="info-value">${v.vites_tipi}</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Ehliyet Sınıfı</span>
+                                <span class="info-value">${v.ehliyet_sinifi || 'B Sınıfı'}</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Km</span>
+                                <span class="info-value">${(v.km || 0).toLocaleString()} km</span>
+                            </div>
+                            <div class="info-item" style="margin-top:10px;">
+                                <span class="info-label">Bakıma Kalan</span>
+                                <span class="info-value">${(v.bakima_kalan_km || 0).toLocaleString()} km</span>
+                            </div>
+                            <div class="maint-progress"><div class="maint-bar" style="width: ${progress}%; background: ${progress < 20 ? 'var(--danger)' : 'var(--primary)'}"></div></div>
+                        </div>
+                        <button class="btn-action">
+                            <i class="fas fa-tools"></i> ${v.durum === 'Aktif' ? 'Bakım Kaydı Ekle' : 'Bakımı Tamamla'}
+                        </button>
+                    </div>
+                `;
+                grid.insertAdjacentHTML('beforeend', card);
+            });
+        }
+
+        document.getElementById('newVehicleForm').onsubmit = async function(e) {
+            e.preventDefault();
+            const newV = {
+                plaka: document.getElementById('vPlate').value,
+                marka_model: document.getElementById('vModel').value,
+                vites_tipi: document.getElementById('vGear').value,
+                ehliyet_sinifi: "B Sınıfı",
+                km: parseInt(document.getElementById('vKm').value)
+            };
+
+            try {
+                const response = await fetch('http://localhost:5000/api/vehicles', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(newV)
+                });
+                if (response.ok) {
+                    alert('Araç başarıyla eklendi!');
+                    closeVehicleModal();
+                    loadVehicles();
+                    e.target.reset();
+                }
+            } catch (err) {
+                console.error(err);
+            }
+        };
+
+        function openVehicleModal() {
+            document.getElementById('vehicleModal').style.display = 'flex';
+        }
+
+        function closeVehicleModal() {
+            document.getElementById('vehicleModal').style.display = 'none';
+        }
+
+        document.querySelector('.btn-floating').onclick = openVehicleModal;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const role = localStorage.getItem('userRole') || 'staff';
+            const theme = localStorage.getItem('theme') || 'light';
+            if (theme === 'dark') document.body.setAttribute('data-theme', 'dark');
+
+            const sidebarLinks = document.getElementById('sidebar-links');
+            let links = `
+                <a href="kursiyerkayit.html" class="menu-item"><i class="fas fa-user-plus"></i> Kursiyer Kayıt</a>
+                <a href="kursiyerlistesi.html" class="menu-item"><i class="fas fa-list-ul"></i> Kursiyer Listesi</a>
+                <a href="suruspratikleri.html" class="menu-item"><i class="fas fa-steering-wheel"></i> Sürüş Pratikleri</a>
+                <a href="araclar.html" class="menu-item active"><i class="fas fa-car"></i> Araç Filosu</a>
+                <a href="egitmen.html" class="menu-item"><i class="fas fa-chalkboard-teacher"></i> Eğitmen Yönetimi</a>
+                <a href="muhasebe.html" class="menu-item"><i class="fas fa-credit-card"></i> Muhasebe</a>
+                <a href="istatistikler.html" class="menu-item"><i class="fas fa-chart-line"></i> İstatistikler</a>
+                <a href="sistemayarlari.html" class="menu-item"><i class="fas fa-cog"></i> Sistem Ayarları</a>
+                <a href="giris.html" class="menu-item" onclick="localStorage.clear()"><i class="fas fa-sign-out-alt"></i> Çıkış Yap</a>
+            `;
+            sidebarLinks.innerHTML = links;
+            loadVehicles();
+        });
+    </script>
+</body>
+</html>
+
